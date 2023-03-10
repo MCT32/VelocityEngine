@@ -1,13 +1,13 @@
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <stdio.h>
 
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 
-int main(int argc, char* args[])
+int main(int argc, char* argv[])
 {
   SDL_Window* window = NULL;
-  SDL_Surface* screenSurface = NULL;
+  SDL_Surface* surface = NULL;
 
   if (SDL_Init(SDL_INIT_VIDEO) < 0)
   {
