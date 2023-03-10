@@ -28,6 +28,8 @@ int main(int argc, char* args[])
     return 1;
   }
 
+  surface = SDL_GetWindowSurface(window);
+
   SDL_Event event;
   bool quit = false;
 
@@ -35,11 +37,20 @@ int main(int argc, char* args[])
   {
     while (SDL_PollEvent(&event))
     {
-      switch (event) {
+      switch (event.type) {
         case SDL_QUIT: quit = true; break;
       default:
         break;
       }
     }
+
+    unsigned int* pixels = (unsigned int*)surface->pixels;
+
+    for(int i = 0; i < SCREEN_WIDTH*SCREEN_HEIGHT; i++)
+    {
+      pixels[i] = 0xFFFFFFFF;
+    }
+
+    SDL_UpdateWindowSurface(window);
   }
 }
