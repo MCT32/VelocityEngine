@@ -1,10 +1,14 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
 
+#include "vec2.h"
+
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 
 #define FOV 1
+
+#define RANGE 8
 
 #define PI 3.14159
 
@@ -17,10 +21,10 @@ struct color
 };
 
 color colors[4] = {
-  {0, 0, 0, 0},
-  {255, 255, 0, 0},
-  {255, 0, 255, 0},
-  {255, 0, 0, 255},
+  {  0,   0,   0,   0},
+  {255, 255,   0,   0}, // Red
+  {255,   0, 255,   0}, // Green
+  {255,   0,   0, 255}, // Blue
 };
 
 uint8_t map[8][8] = {
@@ -35,69 +39,9 @@ uint8_t map[8][8] = {
 };
 
 struct {
-  float posx = 1.5;
-  float posy = 1.5;
+  vec2 pos = vec2(4, 4);
   float ang = 0;
 } player;
-
-float raycast(float posx, float posy, float dirx, float diry)
-{
-  int cellx = ceil(posx);
-  int celly = ceil(posy);
-
-  float dx, dy;
-
-  float total_dist = 0;
-
-  while(true)
-  {
-    if(dirx < 0)
-    {
-     dx = cellx - posx;
-    } else {
-      dx = posx - cellx;
-    }
-
-    if(diry < 0)
-    {
-      dy = celly - posy;
-    } else {
-      dy = posy - celly;
-    }
-
-    if(abs(dx) < abs(dy))
-    {
-      float dist = dx / dirx;
-      total_dist += abs(dist);
-
-      posx += dx;
-      posy += dy;
-
-      if(dx < 0)
-      {
-        cellx -= 1;
-      } else {
-        cellx += 1;
-      }
-    } else {
-      float dist = dy / diry;
-      total_dist += abs(dist);
-
-      posx += dx;
-      posy += dy;
-
-      if(dy < 0)
-      {
-        celly -= 1;
-      } else {
-        celly += 1;
-      }
-    }
-
-    if (map[cellx][celly])
-      return total_dist;
-  }
-}
 
 uint32_t make_color(color color)
 {
@@ -131,31 +75,108 @@ void background(SDL_Surface *surface)
   }
 }
 
+bool raycast(vec2 start, vec2 dir, float range, vec2 &end, float &dist, uint8_t &wall)
+{
+  vec2 current = start;
+
+  int cellX = floor(start.x);
+  int cellY = floor(start.y);
+
+  float tempdist = 0;
+
+  while(true)
+  {
+    float dx, dy;
+
+    if(dir.x > 0)
+    {
+      dx = (cellX + 1) - current.x;
+    } else {
+      dx = cellX - current.x;
+    }
+
+    if(dir.y > 0)
+    {
+      dy = (cellY + 1) - current.y;
+    } else {
+      dy = cellY - current.y;
+    }
+
+    float step;
+    if(abs(dx / dir.x) <= abs(dy / dir.y))
+    {
+      step = dx / dir.x;
+
+      if(dx > 0)
+      {
+        cellX++;
+      } else {
+        cellX--;
+      }
+    } else {
+      step = dy / dir.y;
+
+      if(dy > 0)
+      {
+        cellY++;
+      } else {
+        cellY--;
+      }
+    }
+
+    tempdist += step;
+    if(abs(tempdist) > range) return false;
+
+    current.x += dir.x * step;
+    current.y += dir.y * step;
+
+    if(cellX >= 0 && cellY >= 0 && cellX < 8 && cellY < 8)
+    {
+      if(map[cellX][cellY])
+      {
+        end = current;
+        dist = abs(tempdist);
+        wall = map[cellX][cellY];
+
+        return true;
+      }
+    }
+  }
+}
+
 void draw_vert(SDL_Surface *surface, int x, int y, int length, color color)
 {
   for(int i = 0; i < length; i++)
   {
-    set_pixel(surface, x, y + i, color);
+    if(x >= 0 && x < SCREEN_WIDTH && y + i >= 0 && y + i < SCREEN_HEIGHT) set_pixel(surface, x, y + i, color);
   }
 }
 
 void render_walls(SDL_Surface *surface)
 {
+  vec2 dir = vec2(0, 1).rotate(player.ang);
+
   for(int i = 0; i < SCREEN_WIDTH; i++)
   {
-    float u = i / SCREEN_WIDTH * 2 - 1;
+    float u = float(i) / SCREEN_WIDTH * 2 - 1;
 
-    float planex = FOV * u * sin(player.ang + PI / 2);
-    float planey = FOV * u * cos(player.ang + PI / 2);
+    vec2 plane = vec2(u * FOV, 0).rotate(player.ang);
 
-    float dirx = sin(player.ang) + planex;
-    float diry = cos(player.ang) + planey;
+    vec2 camdir = dir.add(plane).normalize();
 
-    float dist = raycast(player.posx, player.posy, dirx, diry);
+    vec2 end;
+    float dist;
+    uint8_t wall;
+    if(raycast(player.pos, camdir, RANGE, end, dist, wall))
+    {
+      float camdist = end.sub(player.pos).rotate(-player.ang).y;
 
-    printf("raycast distance: %f\n", dist);
+      int height = SCREEN_HEIGHT/ camdist;
+      int gap = (SCREEN_HEIGHT - height) / 2;
 
-    draw_vert(surface, i, SCREEN_HEIGHT / 2 * (dist / 20), SCREEN_HEIGHT / 2 * (1 / (dist / 20)), color {255, 255, 0, 0});
+      draw_vert(surface, i, gap, height, colors[wall]);
+      
+    }
   }
 }
 
@@ -188,12 +209,38 @@ int main(int argc, char* argv[])
   SDL_Event event;
   bool quit = false;
 
+  uint64_t NOW = SDL_GetPerformanceCounter();
+  uint64_t LAST = 0;
+  double deltaTime = 0;
+
   while (!quit)
   {
+    LAST = NOW;
+    NOW = SDL_GetPerformanceCounter();
+
+    deltaTime = (double)((NOW - LAST)*1000 / (double)SDL_GetPerformanceFrequency() / 1000);
+
     while (SDL_PollEvent(&event))
     {
       switch (event.type) {
         case SDL_QUIT: quit = true; break;
+        case SDL_KEYDOWN:
+          if(event.key.keysym.sym == SDLK_UP)
+          {
+            player.pos = player.pos.add(vec2(0, deltaTime * 2).rotate(player.ang));
+          }
+          if(event.key.keysym.sym == SDLK_DOWN)
+          {
+            player.pos = player.pos.add(vec2(0, -deltaTime * 2).rotate(player.ang));
+          }
+          if(event.key.keysym.sym == SDLK_LEFT)
+          {
+            player.ang += deltaTime * PI * 2;
+          }
+          if(event.key.keysym.sym == SDLK_RIGHT)
+          {
+            player.ang -= deltaTime * PI * 2;
+          }
       default:
         break;
       }
