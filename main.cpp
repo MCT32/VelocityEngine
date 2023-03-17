@@ -3,15 +3,18 @@
 
 #include "vec2.h"
 
+// TODO: Allow resizing
+// Pre-defined resolution
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 
-#define FOV 1
+#define FOV 1 // Defines the width of the camera plane
 
-#define RANGE 8
+#define RANGE 8 // Defines how far rays are allowed to travel to find intersections
 
 #define PI 3.14159
 
+// Can be used to create colors used by SDL2
 struct color
 {
   uint8_t alpha;
@@ -20,6 +23,7 @@ struct color
   uint8_t blue;
 };
 
+// Pre-defined colors of walls in the map
 color colors[4] = {
   {  0,   0,   0,   0},
   {255, 255,   0,   0}, // Red
@@ -27,6 +31,8 @@ color colors[4] = {
   {255,   0,   0, 255}, // Blue
 };
 
+// TODO: Load map and other variables from binary file
+// Layout of the map
 uint8_t map[8][8] = {
   {1,1,1,1,1,1,1,1},
   {1,0,0,0,0,0,0,1},
@@ -38,16 +44,31 @@ uint8_t map[8][8] = {
   {1,1,1,1,1,1,1,1},
 };
 
+// Defines the player
 struct {
   vec2 pos = vec2(4, 4);
   float ang = 0;
 } player;
 
+// make_color
+// Purpose: Converts the color structure to a uint32_t to be used by SDL2
+// Parameters:
+//   color: The color to make in the form of a struct
+// Returns: The color in the type uint32_t
 uint32_t make_color(color color)
 {
   return color.blue | (color.green << 8) | (color.red << 16) | (color.alpha << 24);
 }
 
+
+// set_pixel
+// Purpose: Draws a pixel to a surface.
+// Parameters:
+//   surface: The surface to draw the pixel to.
+//   x: The x-coordinate of the pixel.
+//   y: The y-coordinate of the pixel.
+//   color: The color to be drawn to the pixel.
+// Returns: void
 void set_pixel(SDL_Surface *surface, int x, int y, struct color pixel)
 {
   uint32_t upixel = make_color(pixel);
@@ -59,6 +80,12 @@ void set_pixel(SDL_Surface *surface, int x, int y, struct color pixel)
   *target_pixel = upixel;
 }
 
+// TODO: Allow gradient colors to be selected
+// background
+// Purpose: Draws the background gradient.
+// Parameters:
+//   surface: The surface to draw to.
+// Returns: void
 void background(SDL_Surface *surface)
 {
   for(int y = 0; y < SCREEN_HEIGHT; y++)
@@ -75,6 +102,16 @@ void background(SDL_Surface *surface)
   }
 }
 
+// raycast
+// Purpose: Shoots a ray fom the origin untill it intersects a wall.
+// Parameters:
+//   start: The starting point of the ray.
+//   dir: The direction for the ray to travel.
+//   range: How far the ray is allowed to travel.
+//   &end: A reference parameter for the point of intersection.
+//   &dist: A reference parameter for the distance the ray has traveled.
+//   &wall: The type of wall hit.
+// Returns: True id the ray hits a wall, false otherwise.
 bool raycast(vec2 start, vec2 dir, float range, vec2 &end, float &dist, uint8_t &wall)
 {
   vec2 current = start;
@@ -144,6 +181,15 @@ bool raycast(vec2 start, vec2 dir, float range, vec2 &end, float &dist, uint8_t 
   }
 }
 
+// draw_vert
+// Purpose: Draws a vertical line to the screen.
+// Parameters:
+//   surface: The surface to draw the line on.
+//   x: The x-coordinate of the line.
+//   y: The y coordinate of the start of the line.
+//   length: The length of the line.
+//   color: The color of the line.
+// Returns: void
 void draw_vert(SDL_Surface *surface, int x, int y, int length, color color)
 {
   for(int i = 0; i < length; i++)
@@ -152,6 +198,11 @@ void draw_vert(SDL_Surface *surface, int x, int y, int length, color color)
   }
 }
 
+// render_walls
+// Purpose: Renders the walls in from of the player.
+// Parameters:
+//   surface: The surface to draw the walls on.
+// Returns: void
 void render_walls(SDL_Surface *surface)
 {
   vec2 dir = vec2(0, 1).rotate(player.ang);
