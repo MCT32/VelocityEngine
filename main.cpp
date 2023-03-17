@@ -9,6 +9,12 @@
 
 #define PI 3.14159
 
+template<typename T>
+T lerp(T v1, T v2, float fac)
+{
+  return v1 * fac + v2 * (1 - fac);
+}
+
 // Can be used to create colors used by SDL2
 struct color
 {
@@ -23,12 +29,23 @@ struct color
   }
 };
 
+color lerp(color v1, color v2, float fac)
+{
+  return color {lerp(v1.alpha, v2.alpha, fac), lerp(v1.red, v2.red, fac), lerp(v1.green, v2.green, fac), lerp(v1.blue, v2.blue, fac)};
+}
+
 // Pre-defined colors of walls in the map
 color colors[4] = {
   {  0,   0,   0,   0},
   {255, 255,   0,   0}, // Red
   {255,   0, 255,   0}, // Green
   {255,   0,   0, 255}, // Blue
+};
+
+color background_colors[3] = {
+  {255, 255, 255, 255},
+  {255, 0, 0, 0},
+  {255, 255, 165, 0},
 };
 
 // TODO: Load map and other variables from binary file
@@ -80,7 +97,6 @@ void set_pixel(SDL_Surface *surface, int x, int y, struct color pixel)
   *target_pixel = upixel;
 }
 
-// TODO: Allow gradient colors to be selected
 // FIX: Make gradient proportional to width like render_walls.
 // background
 // Purpose: Draws the background gradient.
@@ -93,12 +109,17 @@ void background(SDL_Surface *surface)
   {
     for(int x = 0; x < surface->w; x++)
     {
-      float value = 1 - (float(y) / surface->h * 2);
+      float v = float(y) / surface->h;
 
-      if(value < 0)
-        value = 1 - value;
+      color col;
+      if(v < 0.5)
+      {
+        col = lerp(background_colors[1], background_colors[0], v * 2);
+      } else {
+        col = lerp(background_colors[2], background_colors[1], v * 2 - 1);
+      }
 
-      set_pixel(surface, x, y, color {255, uint8_t(255 * value), uint8_t(255 * value), uint8_t(255 * value)});
+      set_pixel(surface, x, y, col);
     }
   }
 }
@@ -254,6 +275,7 @@ void render_walls(SDL_Surface *surface)
   }
 }
 
+// FIX: Incorrect deltaTime usage, maybe X11 related?
 int main(int argc, char* argv[])
 {
   SDL_Window* window = NULL;
@@ -290,32 +312,33 @@ int main(int argc, char* argv[])
     LAST = NOW;
     NOW = SDL_GetPerformanceCounter();
 
-    deltaTime = (double)((NOW - LAST)*1000 / (double)SDL_GetPerformanceFrequency() / 1000);
+    deltaTime = (double)((NOW - LAST)*1000 / (double)SDL_GetPerformanceFrequency()) / 1000;
 
     while (SDL_PollEvent(&event))
     {
       switch (event.type) {
         case SDL_QUIT: quit = true; break;
-        case SDL_KEYDOWN:
-          if(event.key.keysym.sym == SDLK_UP)
-          {
-            player.pos = player.pos.add(vec2(0, deltaTime * 2).rotate(player.ang));
-          }
-          if(event.key.keysym.sym == SDLK_DOWN)
-          {
-            player.pos = player.pos.add(vec2(0, -deltaTime * 2).rotate(player.ang));
-          }
-          if(event.key.keysym.sym == SDLK_LEFT)
-          {
-            player.ang += deltaTime * PI * 2;
-          }
-          if(event.key.keysym.sym == SDLK_RIGHT)
-          {
-            player.ang -= deltaTime * PI * 2;
-          }
       default:
         break;
       }
+    }
+
+    const uint8_t* pKeystate = SDL_GetKeyboardState(NULL);
+    if(pKeystate[SDL_SCANCODE_UP])
+    {
+      player.pos = player.pos.add(vec2(0, 1.0 / 60).rotate(player.ang));
+    }
+    if(pKeystate[SDL_SCANCODE_DOWN])
+    {
+      player.pos = player.pos.add(vec2(0, -1.0 / 60).rotate(player.ang));
+    }
+    if(pKeystate[SDL_SCANCODE_RIGHT])
+    {
+      player.ang -= 1.0 * PI / 60;
+    }
+    if(pKeystate[SDL_SCANCODE_LEFT])
+    {
+      player.ang += 1.0 * PI / 60;
     }
 
     surface = SDL_GetWindowSurface(window);
