@@ -16,6 +16,11 @@ struct color
   uint8_t red;
   uint8_t green;
   uint8_t blue;
+
+  color mul(float value)
+  {
+    return color {alpha, red * value, green * value, blue * value};
+  }
 };
 
 // Pre-defined colors of walls in the map
@@ -222,7 +227,7 @@ void render_walls(SDL_Surface *surface)
       int height = surface->w / 2 / camdist;
       int gap = (surface->h - height) / 2;
 
-      draw_vert(surface, i, gap, height, colors[wall]);
+      draw_vert(surface, i, gap, height, colors[wall].mul(1 - (camdist / RANGE)));
       
     }
   }
