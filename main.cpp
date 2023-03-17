@@ -3,11 +3,6 @@
 
 #include "vec2.h"
 
-// TODO: Allow resizing
-// Pre-defined resolution
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
-
 #define FOV 1 // Defines the width of the camera plane
 
 #define RANGE 8 // Defines how far rays are allowed to travel to find intersections
@@ -88,11 +83,11 @@ void set_pixel(SDL_Surface *surface, int x, int y, struct color pixel)
 // Returns: void
 void background(SDL_Surface *surface)
 {
-  for(int y = 0; y < SCREEN_HEIGHT; y++)
+  for(int y = 0; y < surface->h; y++)
   {
-    for(int x = 0; x < SCREEN_WIDTH; x++)
+    for(int x = 0; x < surface->w; x++)
     {
-      float value = 1 - (float(y) / SCREEN_HEIGHT * 2);
+      float value = 1 - (float(y) / surface->h * 2);
 
       if(value < 0)
         value = 1 - value;
@@ -194,10 +189,12 @@ void draw_vert(SDL_Surface *surface, int x, int y, int length, color color)
 {
   for(int i = 0; i < length; i++)
   {
-    if(x >= 0 && x < SCREEN_WIDTH && y + i >= 0 && y + i < SCREEN_HEIGHT) set_pixel(surface, x, y + i, color);
+    if(x >= 0 && x < surface->w && y + i >= 0 && y + i < surface->h) set_pixel(surface, x, y + i, color);
   }
 }
 
+// FIX: Artifacts on first render.
+// FIX: Skewing when resolution is changed.
 // render_walls
 // Purpose: Renders the walls in from of the player.
 // Parameters:
@@ -207,9 +204,9 @@ void render_walls(SDL_Surface *surface)
 {
   vec2 dir = vec2(0, 1).rotate(player.ang);
 
-  for(int i = 0; i < SCREEN_WIDTH; i++)
+  for(int i = 0; i < surface->w; i++)
   {
-    float u = float(i) / SCREEN_WIDTH * 2 - 1;
+    float u = float(i) / surface->w * 2 - 1;
 
     vec2 plane = vec2(u * FOV, 0).rotate(player.ang);
 
@@ -222,8 +219,8 @@ void render_walls(SDL_Surface *surface)
     {
       float camdist = end.sub(player.pos).rotate(-player.ang).y;
 
-      int height = SCREEN_HEIGHT/ camdist;
-      int gap = (SCREEN_HEIGHT - height) / 2;
+      int height = surface->h/ camdist;
+      int gap = (surface->h - height) / 2;
 
       draw_vert(surface, i, gap, height, colors[wall]);
       
@@ -245,8 +242,8 @@ int main(int argc, char* argv[])
   window = SDL_CreateWindow(
     "COOM",
     SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-    SCREEN_WIDTH, SCREEN_HEIGHT,
-    SDL_WINDOW_SHOWN
+    680, 480,
+    SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
   );
 
   if (window == NULL)
@@ -254,8 +251,6 @@ int main(int argc, char* argv[])
     fprintf(stderr, "could not create window: %s\n", SDL_GetError());
     return 1;
   }
-
-  surface = SDL_GetWindowSurface(window);
 
   SDL_Event event;
   bool quit = false;
@@ -296,6 +291,8 @@ int main(int argc, char* argv[])
         break;
       }
     }
+
+    surface = SDL_GetWindowSurface(window);
 
     background(surface);
 
