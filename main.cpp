@@ -36,9 +36,9 @@ color colors[4] = {
 uint8_t map[8][8] = {
   {1,1,1,1,1,1,1,1},
   {1,0,0,0,0,0,0,1},
-  {1,0,2,0,2,0,0,1},
+  {1,0,2,0,3,0,0,1},
   {1,0,0,0,0,0,0,1},
-  {1,0,2,0,2,0,0,1},
+  {1,0,3,0,2,0,0,1},
   {1,0,0,0,0,0,0,1},
   {1,0,0,0,0,0,0,1},
   {1,1,1,1,1,1,1,1},
@@ -113,7 +113,7 @@ void background(SDL_Surface *surface)
 //   &dist: A reference parameter for the distance the ray has traveled.
 //   &wall: The type of wall hit.
 // Returns: True id the ray hits a wall, false otherwise.
-bool raycast(vec2 start, vec2 dir, float range, vec2 &end, float &dist, uint8_t &wall)
+bool raycast(vec2 start, vec2 dir, float range, vec2 &end, float &dist, uint8_t &wall, bool &normal)
 {
   vec2 current = start;
 
@@ -151,6 +151,8 @@ bool raycast(vec2 start, vec2 dir, float range, vec2 &end, float &dist, uint8_t 
       } else {
         cellX--;
       }
+
+      normal = false;
     } else {
       step = dy / dir.y;
 
@@ -160,6 +162,8 @@ bool raycast(vec2 start, vec2 dir, float range, vec2 &end, float &dist, uint8_t 
       } else {
         cellY--;
       }
+
+      normal = true;
     }
 
     tempdist += step;
@@ -220,15 +224,32 @@ void render_walls(SDL_Surface *surface)
     vec2 end;
     float dist;
     uint8_t wall;
-    if(raycast(player.pos, camdir, RANGE, end, dist, wall))
+    bool norm;
+    if(raycast(player.pos, camdir, RANGE, end, dist, wall, norm))
     {
       float camdist = end.sub(player.pos).rotate(-player.ang).y;
 
       int height = surface->w / 2 / camdist;
       int gap = (surface->h - height) / 2;
 
-      draw_vert(surface, i, gap, height, colors[wall].mul(1 - (camdist / RANGE)));
-      
+      float mul;
+      if(norm)
+      {
+        mul = 0.8 - (camdist / RANGE);
+      } else {
+        mul = 1 - (camdist / RANGE);
+      }
+
+      if(mul < 0)
+      {
+        mul = 0;
+      }
+      if(mul > 1)
+      {
+        mul = 1;
+      }
+
+      draw_vert(surface, i, gap, height, colors[wall].mul(mul));
     }
   }
 }
