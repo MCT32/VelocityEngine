@@ -63,7 +63,7 @@ uint8_t map[8][8] = {
 
 // Defines the player
 struct {
-  vec2 pos = vec2(4, 4);
+  vec2 pos = vec2(3.5, 3.5);
   float ang = 0;
 } player;
 
@@ -275,6 +275,28 @@ void render_walls(SDL_Surface *surface)
   }
 }
 
+void walk(float distance)
+{
+  vec2 dir = vec2(0, 1).rotate(player.ang);
+
+  vec2 end;
+  float dist;
+  uint8_t wall;
+  bool norm;
+  if(!raycast(player.pos, dir, distance, end, dist, wall, norm))
+  {
+    player.pos = player.pos.add(dir.mul(distance));
+  } else {
+    printf("boom\n");
+    if(!norm)
+    {
+      player.pos.y += dir.y * distance;
+    } else {
+      player.pos.x += dir.x * distance;
+    }
+  }
+}
+
 // FIX: Incorrect deltaTime usage, maybe X11 related?
 int main(int argc, char* argv[])
 {
@@ -326,11 +348,11 @@ int main(int argc, char* argv[])
     const uint8_t* pKeystate = SDL_GetKeyboardState(NULL);
     if(pKeystate[SDL_SCANCODE_UP])
     {
-      player.pos = player.pos.add(vec2(0, deltaTime).rotate(player.ang));
+      walk(deltaTime);
     }
     if(pKeystate[SDL_SCANCODE_DOWN])
     {
-      player.pos = player.pos.add(vec2(0, -deltaTime).rotate(player.ang));
+      walk(-deltaTime);
     }
     if(pKeystate[SDL_SCANCODE_RIGHT])
     {

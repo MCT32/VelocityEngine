@@ -34,4 +34,9 @@ public:
 	{
 		return vec2(x - other.x, y - other.y);
 	}
+
+	vec2 mul(float value)
+	{
+		return vec2(x * value, y * value);
+	}
 };
