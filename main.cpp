@@ -293,7 +293,6 @@ void walk(float distance)
   {
     player.pos = player.pos.add(dir.mul(distance));
   } else {
-    printf("boom\n");
     if(!norm)
     {
       player.pos.y += dir.y * distance;
