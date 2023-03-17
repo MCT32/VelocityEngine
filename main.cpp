@@ -76,6 +76,7 @@ void set_pixel(SDL_Surface *surface, int x, int y, struct color pixel)
 }
 
 // TODO: Allow gradient colors to be selected
+// FIX: Make gradient proportional to width like render_walls.
 // background
 // Purpose: Draws the background gradient.
 // Parameters:
@@ -194,7 +195,6 @@ void draw_vert(SDL_Surface *surface, int x, int y, int length, color color)
 }
 
 // FIX: Artifacts on first render.
-// FIX: Skewing when resolution is changed.
 // render_walls
 // Purpose: Renders the walls in from of the player.
 // Parameters:
@@ -219,7 +219,7 @@ void render_walls(SDL_Surface *surface)
     {
       float camdist = end.sub(player.pos).rotate(-player.ang).y;
 
-      int height = surface->h/ camdist;
+      int height = surface->w / 2 / camdist;
       int gap = (surface->h - height) / 2;
 
       draw_vert(surface, i, gap, height, colors[wall]);
