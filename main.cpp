@@ -326,19 +326,19 @@ int main(int argc, char* argv[])
     const uint8_t* pKeystate = SDL_GetKeyboardState(NULL);
     if(pKeystate[SDL_SCANCODE_UP])
     {
-      player.pos = player.pos.add(vec2(0, 1.0 / 60).rotate(player.ang));
+      player.pos = player.pos.add(vec2(0, deltaTime).rotate(player.ang));
     }
     if(pKeystate[SDL_SCANCODE_DOWN])
     {
-      player.pos = player.pos.add(vec2(0, -1.0 / 60).rotate(player.ang));
+      player.pos = player.pos.add(vec2(0, -deltaTime).rotate(player.ang));
     }
     if(pKeystate[SDL_SCANCODE_RIGHT])
     {
-      player.ang -= 1.0 * PI / 60;
+      player.ang -= deltaTime * PI;
     }
     if(pKeystate[SDL_SCANCODE_LEFT])
     {
-      player.ang += 1.0 * PI / 60;
+      player.ang += deltaTime * PI;
     }
 
     surface = SDL_GetWindowSurface(window);
