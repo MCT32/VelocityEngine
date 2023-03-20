@@ -1,5 +1,7 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
+#include <iostream>
+#include <fstream>
 
 #include "vec2.h"
 
@@ -35,31 +37,13 @@ color lerp(color v1, color v2, float fac)
 }
 
 // Pre-defined colors of walls in the map
-color colors[4] = {
-  {  0,   0,   0,   0},
-  {255, 255,   0,   0}, // Red
-  {255,   0, 255,   0}, // Green
-  {255,   0,   0, 255}, // Blue
-};
+color colors[8];
 
-color background_colors[3] = {
-  {255, 255, 255, 255},
-  {255, 0, 0, 0},
-  {255, 255, 165, 0},
-};
+color background_colors[3];
 
-// TODO: Load map and other variables from binary file
 // Layout of the map
-uint8_t map[8][8] = {
-  {1,1,1,1,1,1,1,1},
-  {1,0,0,0,0,0,0,1},
-  {1,0,2,0,3,0,0,1},
-  {1,0,0,0,0,0,0,1},
-  {1,0,3,0,2,0,0,1},
-  {1,0,0,0,0,0,0,1},
-  {1,0,0,0,0,0,0,1},
-  {1,1,1,1,1,1,1,1},
-};
+uint8_t *map;
+uint8_t mapWidth, mapHeight;
 
 // Defines the player
 struct {
@@ -193,13 +177,13 @@ bool raycast(vec2 start, vec2 dir, float range, vec2 &end, float &dist, uint8_t 
     current.x += dir.x * step;
     current.y += dir.y * step;
 
-    if(cellX >= 0 && cellY >= 0 && cellX < 8 && cellY < 8)
+    if(cellX >= 0 && cellY >= 0 && cellX < mapWidth && cellY < mapHeight)
     {
-      if(map[cellX][cellY])
+      if(map[cellX + cellY * mapWidth])
       {
         end = current;
         dist = abs(tempdist);
-        wall = map[cellX][cellY];
+        wall = map[cellX + cellY * mapWidth];
 
         return true;
       }
@@ -302,7 +286,58 @@ void walk(float distance)
   }
 }
 
-// FIX: Incorrect deltaTime usage, maybe X11 related?
+color load_color(std::ifstream &file)
+{
+  char* buffer = new char[4 * sizeof(uint8_t)];
+  file.read(&buffer[0], 4 * sizeof(uint8_t));
+
+  return color {buffer[0], buffer[1], buffer[2], buffer[3]}; 
+}
+
+float load_float(std::ifstream &file)
+{
+  float buffer;
+  file.read(reinterpret_cast<char*>(&buffer), sizeof(float));
+
+  return buffer;
+}
+
+uint8_t load_uint8_t(std::ifstream &file)
+{
+  uint8_t buffer;
+  file.read(reinterpret_cast<char*>(&buffer), sizeof(uint8_t));
+
+  return buffer;
+}
+
+void load_map()
+{
+  std::ifstream mapfile ("map.gm", std::ifstream::binary);
+
+  // Load wall colors
+  for(int i = 0; i < 8; i++)
+  {
+    colors[i] = load_color(mapfile);
+  }
+
+  // Load floor, middle and roof colors
+  for(int i = 0; i < 3; i++)
+  {
+    background_colors[i] = load_color(mapfile);
+  }
+
+  // Load player position
+  player.pos.x = load_float(mapfile);
+  player.pos.y = load_float(mapfile);
+
+  mapWidth = load_uint8_t(mapfile);
+  mapHeight = load_uint8_t(mapfile);
+
+  map = new uint8_t[mapWidth * mapHeight];
+
+  mapfile.read(reinterpret_cast<char*>(map), mapWidth * mapHeight * sizeof(uint8_t));
+}
+
 int main(int argc, char* argv[])
 {
   SDL_Window* window = NULL;
@@ -326,6 +361,8 @@ int main(int argc, char* argv[])
     fprintf(stderr, "could not create window: %s\n", SDL_GetError());
     return 1;
   }
+
+  load_map();
 
   SDL_Event event;
   bool quit = false;
