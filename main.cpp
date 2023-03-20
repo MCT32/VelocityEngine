@@ -260,7 +260,7 @@ void render_walls(SDL_Surface *surface)
         height = surface->h;
       }
 
-      draw_vert(surface, i, gap, height, colors[wall].mul(mul));
+      draw_vert(surface, i, gap, height, colors[wall - 1].mul(mul));
     }
   }
 }
