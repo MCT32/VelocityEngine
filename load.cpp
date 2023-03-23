@@ -13,7 +13,14 @@ color load_color(std::ifstream &file)
   char* buffer = new char[4 * sizeof(uint8_t)];
   file.read(&buffer[0], 4 * sizeof(uint8_t));
 
-  return color {buffer[0], buffer[1], buffer[2], buffer[3]}; 
+  uint8_t alpha = buffer[0];
+  uint8_t red = buffer[1];
+  uint8_t green = buffer[2];
+  uint8_t blue = buffer[3]; 
+
+  delete[] buffer;
+
+  return color {alpha, red, green, blue};
 }
 
 /*
