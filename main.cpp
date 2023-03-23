@@ -141,8 +141,6 @@ int main(int argc, char* argv[])
     render_walls(surface);
 
     SDL_UpdateWindowSurface(window);
-
-    printf("framerate: %f\n", 1 / deltaTime);
   }
 
   end_log();
