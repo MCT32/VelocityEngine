@@ -7,6 +7,7 @@
 extern std::ofstream log_file;
 
 void init_log();
+void end_log();
 void log(char* message);
 
 #endif

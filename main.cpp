@@ -144,4 +144,6 @@ int main(int argc, char* argv[])
 
     printf("framerate: %f\n", 1 / deltaTime);
   }
+
+  end_log();
 }

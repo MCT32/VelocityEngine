@@ -88,4 +88,6 @@ void load_map()
   map = new uint8_t[mapWidth * mapHeight];
 
   mapfile.read(reinterpret_cast<char*>(map), mapWidth * mapHeight * sizeof(uint8_t));
+
+  mapfile.close();
 }

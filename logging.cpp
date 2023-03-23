@@ -7,6 +7,11 @@ void init_log()
 	log_file.open("log.txt", std::fstream::out);
 }
 
+void end_log()
+{
+	log_file.close();
+}
+
 void log(char* message)
 {
 	printf("%s\n", message);
