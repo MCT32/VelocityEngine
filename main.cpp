@@ -95,15 +95,13 @@ int main(int argc, char* argv[])
   bool quit = false;
 
   uint64_t NOW = SDL_GetPerformanceCounter();
-  uint64_t LAST = 0;
-  double deltaTime = 0;
 
   while (!quit)
   {
-    LAST = NOW;
+    uint64_t LAST = NOW;
     NOW = SDL_GetPerformanceCounter();
 
-    deltaTime = (double)((NOW - LAST)*1000 / (double)SDL_GetPerformanceFrequency()) / 1000;
+    double deltaTime = (double)((NOW - LAST)*1000 / (double)SDL_GetPerformanceFrequency()) / 1000;
 
     while (SDL_PollEvent(&event))
     {

@@ -15,7 +15,7 @@ void set_pixel(SDL_Surface *surface, int x, int y, struct color pixel)
 {
   uint32_t upixel = make_color(pixel);
 
-  uint32_t * const target_pixel = (uint32_t *) ((uint8_t *) surface->pixels
+  uint32_t * const target_pixel = reinterpret_cast<uint32_t *>((uint8_t *) surface->pixels
     + y * surface->pitch
     + x * surface->format->BytesPerPixel);
 
