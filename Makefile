@@ -3,8 +3,8 @@ run: build
 
 build: COOM
 
-COOM: main.o color.o draw.o util.o render.o player.o load.o
-	gcc main.o color.o draw.o util.o render.o player.o load.o -o COOM -lstdc++ -lSDL2 -lm -ldl
+COOM: main.o color.o draw.o util.o render.o player.o load.o logging.o
+	gcc main.o color.o draw.o util.o render.o player.o load.o logging.o -o COOM -lstdc++ -lSDL2 -lm -ldl
 
 main.o: main.cpp
 	gcc main.cpp -c main.o
@@ -26,3 +26,6 @@ player.o: player.cpp
 
 load.o: load.cpp
 	gcc load.cpp -c load.o
+
+logging.o: logging.cpp
+	gcc logging.cpp -c logging.o
