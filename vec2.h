@@ -1,3 +1,8 @@
+#ifndef VEC2_H
+#define VEC2_H 1
+
+#include <math.h>
+
 class vec2
 {
 public:
@@ -40,3 +45,5 @@ public:
 		return vec2(x * value, y * value);
 	}
 };
+
+#endif
