@@ -2,3 +2,7 @@ COOM
 *.out
 *.o
 log.txt
+MakeFile
+CMakeCache.txt
+CMakeFiles
+cmake_install.cmake
