@@ -93,7 +93,6 @@ int main(int argc, char* argv[])
   load_map();
 
   init_log();
-  log("TEST");
 
   SDL_Event event;
   bool quit = false;
