@@ -1,4 +1,4 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
-*.gm linguist-language=json
+*.gms linguist-language=json
