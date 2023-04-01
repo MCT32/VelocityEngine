@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/mct32/Repos/COOM
+CMAKE_SOURCE_DIR = /home/sethh/COOM
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/mct32/Repos/COOM
+CMAKE_BINARY_DIR = /home/sethh/COOM
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mct32/Repos/COOM/CMakeFiles /home/mct32/Repos/COOM//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/sethh/COOM/CMakeFiles /home/sethh/COOM//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mct32/Repos/COOM/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/sethh/COOM/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -129,6 +129,19 @@ COOM/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/COOM.dir/build.make CMakeFiles/COOM.dir/build
 .PHONY : COOM/fast
 
+#=============================================================================
+# Target rules for targets named compmap
+
+# Build rule for target.
+compmap: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 compmap
+.PHONY : compmap
+
+# fast build rule for target.
+compmap/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/compmap.dir/build.make CMakeFiles/compmap.dir/build
+.PHONY : compmap/fast
+
 color.o: color.cpp.o
 .PHONY : color.o
 
@@ -152,6 +165,30 @@ color.s: color.cpp.s
 color.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/COOM.dir/build.make CMakeFiles/COOM.dir/color.cpp.s
 .PHONY : color.cpp.s
+
+compmap.o: compmap.cpp.o
+.PHONY : compmap.o
+
+# target to build an object file
+compmap.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/compmap.dir/build.make CMakeFiles/compmap.dir/compmap.cpp.o
+.PHONY : compmap.cpp.o
+
+compmap.i: compmap.cpp.i
+.PHONY : compmap.i
+
+# target to preprocess a source file
+compmap.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/compmap.dir/build.make CMakeFiles/compmap.dir/compmap.cpp.i
+.PHONY : compmap.cpp.i
+
+compmap.s: compmap.cpp.s
+.PHONY : compmap.s
+
+# target to generate assembly for a file
+compmap.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/compmap.dir/build.make CMakeFiles/compmap.dir/compmap.cpp.s
+.PHONY : compmap.cpp.s
 
 draw.o: draw.cpp.o
 .PHONY : draw.o
@@ -330,9 +367,13 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... COOM"
+	@echo "... compmap"
 	@echo "... color.o"
 	@echo "... color.i"
 	@echo "... color.s"
+	@echo "... compmap.o"
+	@echo "... compmap.i"
+	@echo "... compmap.s"
 	@echo "... draw.o"
 	@echo "... draw.i"
 	@echo "... draw.s"

@@ -1,4 +1,5 @@
 COOM
+*.gm
 *.out
 *.o
 log.txt
