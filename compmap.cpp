@@ -60,12 +60,12 @@ int main(int argc, char* argv[])
 
 	mapDest << w << h;
 
-	for(int x = 0; x < w; x++)
+	for(int y = 0; y < h; y++)
 	{
-		for(int y = 0; y < h; y++)
+		for(int x = 0; x < w; x++)
 		{
 			uint8_t wall = mapJson["mapData"][y][x].asUInt();
-			mapDest << wall;
+			mapDest.write(reinterpret_cast<const char*>(&wall), sizeof(uint8_t));
 		}
 	}
 
