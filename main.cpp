@@ -38,23 +38,117 @@ uint8_t mapWidth, mapHeight;
 */
 void walk(float distance)
 {
-  vec2 dir = vec2(0, 1).rotate(Player.ang);
+  vec2 dir = vec2(0, distance).rotate(Player.ang);
 
-  vec2 end;
-  float dist;
-  uint8_t wall;
-  bool norm;
-  if(!raycast(Player.pos, dir, distance, end, dist, wall, norm))
+  vec2 newPos = Player.pos.add(dir);
+  int x = floor(Player.pos.x);
+  int y = floor(Player.pos.y);
+
+  // +x
+  if(x < mapWidth - 1 && map[x + 1 + y * mapWidth])
   {
-    Player.pos = Player.pos.add(dir.mul(distance));
-  } else {
-    if(!norm)
+    if(newPos.x + Player.size / 2 > x + 1)
     {
-      Player.pos.y += dir.y * distance;
-    } else {
-      Player.pos.x += dir.x * distance;
+      newPos.x = x + 1 - Player.size / 2;
     }
   }
+
+  // -x
+  if(x > 0 && map[x - 1 + y * mapWidth])
+  {
+    if(newPos.x - Player.size / 2 < x)
+    {
+      newPos.x = x + Player.size / 2;
+    }
+  }
+
+  // +y
+  if(y < mapHeight - 1 && map[x + (y + 1) * mapWidth])
+  {
+    if(newPos.y + Player.size / 2 > y + 1)
+    {
+      newPos.y = y + 1 - Player.size / 2;
+    }
+  }
+
+  // -y
+  if(y > 0 && map[x + (y - 1) * mapWidth])
+  {
+    if(newPos.y - Player.size / 2 < y)
+    {
+      newPos.y = y + Player.size / 2;
+    }
+  }
+
+  // +x +y
+  if(x < mapWidth - 1 && y < mapHeight - 1 && map[x + 1 + (y + 1) * mapWidth])
+  {
+    if(x + 1 - newPos.x >= y + 1 - newPos.y)
+    {
+      if(newPos.x + Player.size / 2 > x + 1)
+      {
+        newPos.x = x + 1 - Player.size / 2;
+      }
+    } else {
+      if(newPos.y + Player.size / 2 > y + 1)
+      {
+        newPos.y = y + 1 - Player.size / 2;
+      }
+    }
+  }
+
+  // -x +y
+  if(x > 0 - 1 && y < mapHeight - 1 && map[x - 1 + (y + 1) * mapWidth])
+  {
+    if(newPos.x - x >= y + 1 - newPos.y)
+    {
+      if(newPos.x - Player.size / 2 < x)
+      {
+        newPos.x = x + Player.size / 2;
+      }
+    } else {
+      if(newPos.y + Player.size / 2 > y + 1)
+      {
+        newPos.y = y + 1 - Player.size / 2;
+      }
+    }
+  }
+
+  // +x -y
+  if(x < mapWidth - 1 && y > 0 && map[x + 1 + (y - 1) * mapWidth])
+  {
+    if(x + 1 - newPos.x >= newPos.y - y)
+    {
+      if(newPos.x + Player.size / 2 > x + 1)
+      {
+        newPos.x = x + 1 - Player.size / 2;
+      }
+    } else {
+      if(newPos.y - Player.size / 2 < y)
+      {
+        newPos.y = y + Player.size / 2;
+      }
+    }
+  }
+
+  // -x -y
+  if(x > 0 && y > 0 && map[x + 1 + (y - 1) * mapWidth])
+  {
+    if(newPos.x - x >= newPos.y - y)
+    {
+      if(newPos.x - Player.size / 2 < x)
+      {
+        newPos.x = x + Player.size / 2;
+      }
+    } else {
+      if(newPos.y - Player.size / 2 < y)
+      {
+        newPos.y = y + Player.size / 2;
+      }
+    }
+  }
+
+  Player.pos = newPos;
 }
 
 /*

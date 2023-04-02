@@ -11,6 +11,8 @@ struct player
 {
   vec2 pos = vec2(3.5, 3.5);
   float ang = 0;
+
+  float size = 0.5;
 };
 
 #endif
