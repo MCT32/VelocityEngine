@@ -1,6 +1,6 @@
 # TODO
 - [x] Map compiler script
-- [ ] Box collisions
+- [x] Box collisions
 - [ ] Better controls with mouse
 - [ ] Better movement with momentum
 - [ ] Textures

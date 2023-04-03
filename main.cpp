@@ -33,8 +33,6 @@ uint8_t mapWidth, mapHeight;
   Parameters:
     distance: Distance the player should move.
   Returns: Nothing.
-
-  TODO: Use box collisions.
 */
 void walk(float distance)
 {
@@ -132,7 +130,7 @@ void walk(float distance)
   }
 
   // -x -y
-  if(x > 0 && y > 0 && map[x + 1 + (y - 1) * mapWidth])
+  if(x > 0 && y > 0 && map[x - 1 + (y - 1) * mapWidth])
   {
     if(newPos.x - x >= newPos.y - y)
     {
