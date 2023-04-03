@@ -34,11 +34,9 @@ uint8_t mapWidth, mapHeight;
     distance: Distance the player should move.
   Returns: Nothing.
 */
-void walk(float distance)
+void walk(vec2 deltaPos)
 {
-  vec2 dir = vec2(0, distance).rotate(Player.ang);
-
-  vec2 newPos = Player.pos.add(dir);
+  vec2 newPos = Player.pos.add(deltaPos);
   int x = floor(Player.pos.x);
   int y = floor(Player.pos.y);
 
@@ -210,12 +208,21 @@ int main(int argc, char* argv[])
     const uint8_t* pKeystate = SDL_GetKeyboardState(NULL);
     if(pKeystate[SDL_SCANCODE_UP])
     {
-      walk(deltaTime);
+      walk(vec2(0, deltaTime).rotate(Player.ang));
     }
     if(pKeystate[SDL_SCANCODE_DOWN])
     {
-      walk(-deltaTime);
+      walk(vec2(0, -deltaTime).rotate(Player.ang));
     }
+    if(pKeystate[SDL_SCANCODE_RIGHT])
+    {
+      walk(vec2(deltaTime, 0).rotate(Player.ang));
+    }
+    if(pKeystate[SDL_SCANCODE_LEFT])
+    {
+      walk(vec2(-deltaTime, 0).rotate(Player.ang));
+    }
+    /*
     if(pKeystate[SDL_SCANCODE_RIGHT])
     {
       Player.ang -= deltaTime * PI;
@@ -224,6 +231,7 @@ int main(int argc, char* argv[])
     {
       Player.ang += deltaTime * PI;
     }
+    */
 
     surface = SDL_GetWindowSurface(window);
 
