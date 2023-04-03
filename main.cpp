@@ -189,6 +189,8 @@ int main(int argc, char* argv[])
 
   uint64_t NOW = SDL_GetPerformanceCounter();
 
+  SDL_SetRelativeMouseMode(SDL_TRUE);
+
   while (!quit)
   {
     uint64_t LAST = NOW;
@@ -196,42 +198,38 @@ int main(int argc, char* argv[])
 
     double deltaTime = (double)((NOW - LAST)*1000 / (double)SDL_GetPerformanceFrequency()) / 1000;
 
+    int relX = 0;
+    int relY = 0;
+
     while (SDL_PollEvent(&event))
     {
       switch (event.type) {
         case SDL_QUIT: quit = true; break;
+        case SDL_MOUSEMOTION: relX += event.motion.xrel; relY += event.motion.yrel;
       default:
         break;
       }
     }
 
     const uint8_t* pKeystate = SDL_GetKeyboardState(NULL);
-    if(pKeystate[SDL_SCANCODE_UP])
+    if(pKeystate[SDL_SCANCODE_W])
     {
       walk(vec2(0, deltaTime).rotate(Player.ang));
     }
-    if(pKeystate[SDL_SCANCODE_DOWN])
+    if(pKeystate[SDL_SCANCODE_S])
     {
       walk(vec2(0, -deltaTime).rotate(Player.ang));
     }
-    if(pKeystate[SDL_SCANCODE_RIGHT])
+    if(pKeystate[SDL_SCANCODE_D])
     {
       walk(vec2(deltaTime, 0).rotate(Player.ang));
     }
-    if(pKeystate[SDL_SCANCODE_LEFT])
+    if(pKeystate[SDL_SCANCODE_A])
     {
       walk(vec2(-deltaTime, 0).rotate(Player.ang));
     }
-    /*
-    if(pKeystate[SDL_SCANCODE_RIGHT])
-    {
-      Player.ang -= deltaTime * PI;
-    }
-    if(pKeystate[SDL_SCANCODE_LEFT])
-    {
-      Player.ang += deltaTime * PI;
-    }
-    */
+
+    Player.ang -= float(relX) / 180 * SENSITIVITY;
 
     surface = SDL_GetWindowSurface(window);
 
