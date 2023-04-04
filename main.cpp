@@ -5,7 +5,6 @@
 // Include custom headers
 #include "vec2.h"
 #include "color.h"
-#include "draw.h"
 #include "util.h"
 #include "render.h"
 #include "player.h"
@@ -159,7 +158,7 @@ void walk(vec2 deltaPos)
 int main(int argc, char* argv[])
 {
   SDL_Window* window = NULL;
-  SDL_Surface* surface = NULL;
+  SDL_Renderer* renderer = NULL;
 
   if (SDL_Init(SDL_INIT_VIDEO) < 0)
   {
@@ -179,6 +178,10 @@ int main(int argc, char* argv[])
     fprintf(stderr, "could not create window: %s\n", SDL_GetError());
     return 1;
   }
+
+  renderer = SDL_CreateRenderer(window, -1, 0);
+
+  SDL_RenderSetLogicalSize(renderer, 460, 320);
 
   load_map();
 
@@ -254,13 +257,13 @@ int main(int argc, char* argv[])
       Player.ang -= float(relX) / 180 * SENSITIVITY;
     }
 
-    surface = SDL_GetWindowSurface(window);
+    SDL_RenderClear(renderer);
 
-    render_background(surface);
+    render_background(renderer);
 
-    render_walls(surface);
+    render_walls(renderer);
 
-    SDL_UpdateWindowSurface(window);
+    SDL_RenderPresent(renderer);
   }
 
   end_log();

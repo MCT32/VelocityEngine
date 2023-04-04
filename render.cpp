@@ -4,42 +4,45 @@
 // background
 // Purpose: Draws the background gradient.
 // Parameters:
-//   surface: The surface to draw to.
+//   renderer: The renderer to draw with.
 // Returns: void
-void render_background(SDL_Surface *surface)
+void render_background(SDL_Renderer *renderer)
 {
-  for(int y = 0; y < surface->h; y++)
+  int w, h;
+  SDL_RenderGetLogicalSize(renderer, &w, &h);
+
+  for(int y = 0; y < h; y++)
   {
-    for(int x = 0; x < surface->w; x++)
+    float v = float(y) / h;
+
+    color col;
+    if(v < 0.5)
     {
-      float v = float(y) / surface->h;
-
-      color col;
-      if(v < 0.5)
-      {
-        col = lerp_color(background_colors[1], background_colors[0], v * 2);
-      } else {
-        col = lerp_color(background_colors[2], background_colors[1], v * 2 - 1);
-      }
-
-      set_pixel(surface, x, y, col);
+      col = lerp_color(background_colors[1], background_colors[0], v * 2);
+    } else {
+      col = lerp_color(background_colors[2], background_colors[1], v * 2 - 1);
     }
+
+    SDL_SetRenderDrawColor(renderer, col.red, col.green, col.blue, col.alpha);
+    SDL_RenderDrawLine(renderer, 0, y, w, y);
   }
 }
 
-// FIX: Artifacts on first render.
 // render_walls
 // Purpose: Renders the walls in from of the player.
 // Parameters:
-//   surface: The surface to draw the walls on.
+//   renderer: The renderer to draw the walls with.
 // Returns: void
-void render_walls(SDL_Surface *surface)
+void render_walls(SDL_Renderer *renderer)
 {
+  int w, h;
+  SDL_RenderGetLogicalSize(renderer, &w, &h);
+
   vec2 dir = vec2(0, 1).rotate(Player.ang);
 
-  for(int i = 0; i < surface->w; i++)
+  for(int i = 0; i < w; i++)
   {
-    float u = float(i) / surface->w * 2 - 1;
+    float u = float(i) / w * 2 - 1;
 
     vec2 plane = vec2(u * FOV, 0).rotate(Player.ang);
 
@@ -53,8 +56,8 @@ void render_walls(SDL_Surface *surface)
     {
       float camdist = end.sub(Player.pos).rotate(-Player.ang).y;
 
-      int height = surface->w / 2 / camdist;
-      int gap = (surface->h - height) / 2;
+      int height = w / 2 / camdist;
+      int gap = (h - height) / 2;
 
       float mul;
       if(norm)
@@ -73,13 +76,16 @@ void render_walls(SDL_Surface *surface)
         mul = 1;
       }
 
-      if(height > surface->h)
+      if(height > h)
       {
         gap = 0;
-        height = surface->h;
+        height = h;
       }
 
-      draw_vert(surface, i, gap, height, colors[wall - 1].mul(mul));
+      color col = colors[wall - 1].mul(mul);
+
+      SDL_SetRenderDrawColor(renderer, col.red, col.green, col.blue, col.alpha);
+      SDL_RenderDrawLine(renderer, i, gap, i, gap + height);
     }
   }
 }
