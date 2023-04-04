@@ -186,6 +186,7 @@ int main(int argc, char* argv[])
 
   SDL_Event event;
   bool quit = false;
+  bool paused = false;
 
   uint64_t NOW = SDL_GetPerformanceCounter();
 
@@ -203,33 +204,55 @@ int main(int argc, char* argv[])
 
     while (SDL_PollEvent(&event))
     {
-      switch (event.type) {
+      switch (event.type)
+      {
         case SDL_QUIT: quit = true; break;
         case SDL_MOUSEMOTION: relX += event.motion.xrel; relY += event.motion.yrel;
+        case SDL_KEYDOWN:
+          switch (event.key.keysym.scancode)
+	  {
+	    case SDL_SCANCODE_ESCAPE:
+	      paused = !paused;
+	      if(paused)
+	      {
+		SDL_SetRelativeMouseMode(SDL_FALSE);
+	      } else {
+		SDL_SetRelativeMouseMode(SDL_TRUE);
+	      }
+	      break;
+	    case SDL_SCANCODE_F1:
+	      quit = true;
+	      break;
+	    default:
+	      break;
+	  }
       default:
         break;
       }
     }
 
-    const uint8_t* pKeystate = SDL_GetKeyboardState(NULL);
-    if(pKeystate[SDL_SCANCODE_W])
+    if(!paused)
     {
-      walk(vec2(0, deltaTime).rotate(Player.ang));
-    }
-    if(pKeystate[SDL_SCANCODE_S])
-    {
-      walk(vec2(0, -deltaTime).rotate(Player.ang));
-    }
-    if(pKeystate[SDL_SCANCODE_D])
-    {
-      walk(vec2(deltaTime, 0).rotate(Player.ang));
-    }
-    if(pKeystate[SDL_SCANCODE_A])
-    {
-      walk(vec2(-deltaTime, 0).rotate(Player.ang));
-    }
+      const uint8_t* pKeystate = SDL_GetKeyboardState(NULL);
+      if(pKeystate[SDL_SCANCODE_W])
+      {
+        walk(vec2(0, deltaTime).rotate(Player.ang));
+      }
+      if(pKeystate[SDL_SCANCODE_S])
+      {
+        walk(vec2(0, -deltaTime).rotate(Player.ang));
+      }
+      if(pKeystate[SDL_SCANCODE_D])
+      {
+        walk(vec2(deltaTime, 0).rotate(Player.ang));
+      }
+      if(pKeystate[SDL_SCANCODE_A])
+      {
+        walk(vec2(-deltaTime, 0).rotate(Player.ang));
+      }
 
-    Player.ang -= float(relX) / 180 * SENSITIVITY;
+      Player.ang -= float(relX) / 180 * SENSITIVITY;
+    }
 
     surface = SDL_GetWindowSurface(window);
 
