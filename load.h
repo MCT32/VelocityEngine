@@ -5,8 +5,15 @@
 #include <fstream>
 
 #include "color.h"
-#include "globals.h"
+#include "player.h"
 
+extern player Player;
+
+extern color colors[];
+extern color background_colors[];
+
+extern uint8_t mapWidth, mapHeight;
+extern uint8_t *map;
 
 color load_color(std::ifstream &file);
 float load_float(std::ifstream &file);

@@ -4,7 +4,9 @@
 #include "color.h"
 #include "vec2.h"
 #include "player.h"
-#include "globals.h"
+
+extern uint8_t mapWidth, mapHeight;
+extern uint8_t *map;
 
 template<typename T>
 T lerp(T v1, T v2, float fac);

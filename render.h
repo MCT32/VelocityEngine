@@ -4,7 +4,11 @@
 #include "util.h"
 #include "player.h"
 #include "config.h"
-#include "globals.h"
+
+extern player Player;
+
+extern color colors[];
+extern color background_colors[];
 
 void render_background(SDL_Renderer *renderer);
 
