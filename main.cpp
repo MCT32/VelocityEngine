@@ -26,127 +26,6 @@ uint8_t *map;
 uint8_t mapWidth, mapHeight;
 
 /*
-  Function: walk
-  Purpose: Moves the player forward by a distance, testing for collisions.
-
-  Parameters:
-    distance: Distance the player should move.
-  Returns: Nothing.
-*/
-void walk(vec2 deltaPos)
-{
-  vec2 newPos = Player.getPosition().add(deltaPos);
-  int x = floor(Player.getPosition().x);
-  int y = floor(Player.getPosition().y);
-
-  // +x
-  if(x < mapWidth - 1 && map[x + 1 + y * mapWidth])
-  {
-    if(newPos.x + Player.getSize() / 2 > x + 1)
-    {
-      newPos.x = x + 1 - Player.getSize() / 2;
-    }
-  }
-
-  // -x
-  if(x > 0 && map[x - 1 + y * mapWidth])
-  {
-    if(newPos.x - Player.getSize() / 2 < x)
-    {
-      newPos.x = x + Player.getSize() / 2;
-    }
-  }
-
-  // +y
-  if(y < mapHeight - 1 && map[x + (y + 1) * mapWidth])
-  {
-    if(newPos.y + Player.getSize() / 2 > y + 1)
-    {
-      newPos.y = y + 1 - Player.getSize() / 2;
-    }
-  }
-
-  // -y
-  if(y > 0 && map[x + (y - 1) * mapWidth])
-  {
-    if(newPos.y - Player.getSize() / 2 < y)
-    {
-      newPos.y = y + Player.getSize() / 2;
-    }
-  }
-
-  // +x +y
-  if(x < mapWidth - 1 && y < mapHeight - 1 && map[x + 1 + (y + 1) * mapWidth])
-  {
-    if(x + 1 - newPos.x >= y + 1 - newPos.y)
-    {
-      if(newPos.x + Player.getSize() / 2 > x + 1)
-      {
-        newPos.x = x + 1 - Player.getSize() / 2;
-      }
-    } else {
-      if(newPos.y + Player.getSize() / 2 > y + 1)
-      {
-        newPos.y = y + 1 - Player.getSize() / 2;
-      }
-    }
-  }
-
-  // -x +y
-  if(x > 0 - 1 && y < mapHeight - 1 && map[x - 1 + (y + 1) * mapWidth])
-  {
-    if(newPos.x - x >= y + 1 - newPos.y)
-    {
-      if(newPos.x - Player.getSize() / 2 < x)
-      {
-        newPos.x = x + Player.getSize() / 2;
-      }
-    } else {
-      if(newPos.y + Player.getSize() / 2 > y + 1)
-      {
-        newPos.y = y + 1 - Player.getSize() / 2;
-      }
-    }
-  }
-
-  // +x -y
-  if(x < mapWidth - 1 && y > 0 && map[x + 1 + (y - 1) * mapWidth])
-  {
-    if(x + 1 - newPos.x >= newPos.y - y)
-    {
-      if(newPos.x + Player.getSize() / 2 > x + 1)
-      {
-        newPos.x = x + 1 - Player.getSize() / 2;
-      }
-    } else {
-      if(newPos.y - Player.getSize() / 2 < y)
-      {
-        newPos.y = y + Player.getSize() / 2;
-      }
-    }
-  }
-
-  // -x -y
-  if(x > 0 && y > 0 && map[x - 1 + (y - 1) * mapWidth])
-  {
-    if(newPos.x - x >= newPos.y - y)
-    {
-      if(newPos.x - Player.getSize() / 2 < x)
-      {
-        newPos.x = x + Player.getSize() / 2;
-      }
-    } else {
-      if(newPos.y - Player.getSize() / 2 < y)
-      {
-        newPos.y = y + Player.getSize() / 2;
-      }
-    }
-  }
-
-  Player.setPosition(newPos);
-}
-
-/*
   Function: main
   Purpose: Sets up windows and global variables and starts the game loop.
 
@@ -237,24 +116,28 @@ int main(int argc, char* argv[])
     if(!paused)
     {
       const uint8_t* pKeystate = SDL_GetKeyboardState(NULL);
+      vec2 wishdir = vec2();
       if(pKeystate[SDL_SCANCODE_W])
       {
-        walk(vec2(0, deltaTime).rotate(Player.getRotation()));
+        wishdir = wishdir.add(vec2(0, 1).rotate(Player.getRotation()));
       }
       if(pKeystate[SDL_SCANCODE_S])
       {
-        walk(vec2(0, -deltaTime).rotate(Player.getRotation()));
+        wishdir = wishdir.add(vec2(0, -1).rotate(Player.getRotation()));
       }
       if(pKeystate[SDL_SCANCODE_D])
       {
-        walk(vec2(deltaTime, 0).rotate(Player.getRotation()));
+        wishdir = wishdir.add(vec2(1, 0).rotate(Player.getRotation()));
       }
       if(pKeystate[SDL_SCANCODE_A])
       {
-        walk(vec2(-deltaTime, 0).rotate(Player.getRotation()));
+        wishdir = wishdir.add(vec2(-1, 0).rotate(Player.getRotation()));
       }
 
-      Player.setRotation(Player.getRotation() - float(relX) / 180 * SENSITIVITY);
+      Player.setVelocity(wishdir.normalize());
+      Player.update(deltaTime);
+
+      Player.rotate(- float(relX) / 180 * SENSITIVITY);
     }
 
     SDL_RenderClear(renderer);

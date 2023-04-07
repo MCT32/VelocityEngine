@@ -91,6 +91,21 @@ float entity::getSize()
 	return size;
 }
 
+void entity::setVelocity(float x, float y)
+{
+  velocity = vec2(x, y);
+}
+
+void entity::setVelocity(vec2 in)
+{
+  velocity = in;
+}
+
+vec2 entity::getVelocity()
+{
+  return velocity;
+}
+
 void entity::move(float x, float y)
 {
 	position = position.add(vec2(x, y));
@@ -99,4 +114,125 @@ void entity::move(float x, float y)
 void entity::move(vec2 delta)
 {
 	position = position.add(delta);
+}
+
+void entity::moveAndCollide(vec2 delta)
+{
+  move(delta);
+  int x = floor(position.x);
+  int y = floor(position.y);
+
+  // +x
+  if(x < mapWidth - 1 && map[x + 1 + y * mapWidth])
+  {
+    if(position.x + size / 2 > x + 1)
+    {
+      position.x = x + 1 - size / 2;
+    }
+  }
+
+  // -x
+  if(x > 0 && map[x - 1 + y * mapWidth])
+  {
+    if(position.x - size / 2 < x)
+    {
+      position.x = x + size / 2;
+    }
+  }
+
+  // +y
+  if(y < mapHeight - 1 && map[x + (y + 1) * mapWidth])
+  {
+    if(position.y + size / 2 > y + 1)
+    {
+      position.y = y + 1 - size / 2;
+    }
+  }
+
+  // -y
+  if(y > 0 && map[x + (y - 1) * mapWidth])
+  {
+    if(position.y - size / 2 < y)
+    {
+      position.y = y + size / 2;
+    }
+  }
+
+  // +x +y
+  if(x < mapWidth - 1 && y < mapHeight - 1 && map[x + 1 + (y + 1) * mapWidth])
+  {
+    if(x + 1 - position.x >= y + 1 - position.y)
+    {
+      if(position.x + size / 2 > x + 1)
+      {
+        position.x = x + 1 - size / 2;
+      }
+    } else {
+      if(position.y + size / 2 > y + 1)
+      {
+        position.y = y + 1 - size / 2;
+      }
+    }
+  }
+
+  // -x +y
+  if(x > 0 - 1 && y < mapHeight - 1 && map[x - 1 + (y + 1) * mapWidth])
+  {
+    if(position.x - x >= y + 1 - position.y)
+    {
+      if(position.x - size / 2 < x)
+      {
+        position.x = x + size / 2;
+      }
+    } else {
+      if(position.y + size / 2 > y + 1)
+      {
+        position.y = y + 1 - size / 2;
+      }
+    }
+  }
+
+  // +x -y
+  if(x < mapWidth - 1 && y > 0 && map[x + 1 + (y - 1) * mapWidth])
+  {
+    if(x + 1 - position.x >= position.y - y)
+    {
+      if(position.x + size / 2 > x + 1)
+      {
+        position.x = x + 1 - size / 2;
+      }
+    } else {
+      if(position.y - size / 2 < y)
+      {
+        position.y = y + size / 2;
+      }
+    }
+  }
+
+  // -x -y
+  if(x > 0 && y > 0 && map[x - 1 + (y - 1) * mapWidth])
+  {
+    if(position.x - x >= position.y - y)
+    {
+      if(position.x - size / 2 < x)
+      {
+        position.x = x + size / 2;
+      }
+    } else {
+      if(position.y - size / 2 < y)
+      {
+        position.y = y + size / 2;
+      }
+    }
+  }
+}
+
+void entity::rotate(float in)
+{
+  rotation += in;
+}
+
+void entity::update(float deltaTime)
+{
+  moveAndCollide(velocity.mul(deltaTime));
 }
