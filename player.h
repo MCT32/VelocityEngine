@@ -3,16 +3,14 @@
 
 #include <stdint.h>
 
+#include "entity.h"
 #include "vec2.h"
 #include "util.h"
 
 // Defines the player
-struct player
+class player : public entity
 {
-  vec2 pos = vec2(3.5, 3.5);
-  float ang = 0;
-
-  float size = 0.5;
+  using entity::entity;
 };
 
 #endif

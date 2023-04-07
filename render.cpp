@@ -38,13 +38,13 @@ void render_walls(SDL_Renderer *renderer)
   int w, h;
   SDL_RenderGetLogicalSize(renderer, &w, &h);
 
-  vec2 dir = vec2(0, 1).rotate(Player.ang);
+  vec2 dir = vec2(0, 1).rotate(Player.getRotation());
 
   for(int i = 0; i < w; i++)
   {
     float u = float(i) / w * 2 - 1;
 
-    vec2 plane = vec2(u * FOV, 0).rotate(Player.ang);
+    vec2 plane = vec2(u * FOV, 0).rotate(Player.getRotation());
 
     vec2 camdir = dir.add(plane).normalize();
 
@@ -52,9 +52,9 @@ void render_walls(SDL_Renderer *renderer)
     float dist;
     uint8_t wall;
     bool norm;
-    if(raycast(Player.pos, camdir, RANGE, end, dist, wall, norm))
+    if(raycast(Player.getPosition(), camdir, RANGE, end, dist, wall, norm))
     {
-      float camdist = end.sub(Player.pos).rotate(-Player.ang).y;
+      float camdist = end.sub(Player.getPosition()).rotate(-Player.getRotation()).y;
 
       int height = w / 2 / camdist;
       int gap = (h - height) / 2;

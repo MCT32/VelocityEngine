@@ -35,43 +35,43 @@ uint8_t mapWidth, mapHeight;
 */
 void walk(vec2 deltaPos)
 {
-  vec2 newPos = Player.pos.add(deltaPos);
-  int x = floor(Player.pos.x);
-  int y = floor(Player.pos.y);
+  vec2 newPos = Player.getPosition().add(deltaPos);
+  int x = floor(Player.getPosition().x);
+  int y = floor(Player.getPosition().y);
 
   // +x
   if(x < mapWidth - 1 && map[x + 1 + y * mapWidth])
   {
-    if(newPos.x + Player.size / 2 > x + 1)
+    if(newPos.x + Player.getSize() / 2 > x + 1)
     {
-      newPos.x = x + 1 - Player.size / 2;
+      newPos.x = x + 1 - Player.getSize() / 2;
     }
   }
 
   // -x
   if(x > 0 && map[x - 1 + y * mapWidth])
   {
-    if(newPos.x - Player.size / 2 < x)
+    if(newPos.x - Player.getSize() / 2 < x)
     {
-      newPos.x = x + Player.size / 2;
+      newPos.x = x + Player.getSize() / 2;
     }
   }
 
   // +y
   if(y < mapHeight - 1 && map[x + (y + 1) * mapWidth])
   {
-    if(newPos.y + Player.size / 2 > y + 1)
+    if(newPos.y + Player.getSize() / 2 > y + 1)
     {
-      newPos.y = y + 1 - Player.size / 2;
+      newPos.y = y + 1 - Player.getSize() / 2;
     }
   }
 
   // -y
   if(y > 0 && map[x + (y - 1) * mapWidth])
   {
-    if(newPos.y - Player.size / 2 < y)
+    if(newPos.y - Player.getSize() / 2 < y)
     {
-      newPos.y = y + Player.size / 2;
+      newPos.y = y + Player.getSize() / 2;
     }
   }
 
@@ -80,14 +80,14 @@ void walk(vec2 deltaPos)
   {
     if(x + 1 - newPos.x >= y + 1 - newPos.y)
     {
-      if(newPos.x + Player.size / 2 > x + 1)
+      if(newPos.x + Player.getSize() / 2 > x + 1)
       {
-        newPos.x = x + 1 - Player.size / 2;
+        newPos.x = x + 1 - Player.getSize() / 2;
       }
     } else {
-      if(newPos.y + Player.size / 2 > y + 1)
+      if(newPos.y + Player.getSize() / 2 > y + 1)
       {
-        newPos.y = y + 1 - Player.size / 2;
+        newPos.y = y + 1 - Player.getSize() / 2;
       }
     }
   }
@@ -97,14 +97,14 @@ void walk(vec2 deltaPos)
   {
     if(newPos.x - x >= y + 1 - newPos.y)
     {
-      if(newPos.x - Player.size / 2 < x)
+      if(newPos.x - Player.getSize() / 2 < x)
       {
-        newPos.x = x + Player.size / 2;
+        newPos.x = x + Player.getSize() / 2;
       }
     } else {
-      if(newPos.y + Player.size / 2 > y + 1)
+      if(newPos.y + Player.getSize() / 2 > y + 1)
       {
-        newPos.y = y + 1 - Player.size / 2;
+        newPos.y = y + 1 - Player.getSize() / 2;
       }
     }
   }
@@ -114,14 +114,14 @@ void walk(vec2 deltaPos)
   {
     if(x + 1 - newPos.x >= newPos.y - y)
     {
-      if(newPos.x + Player.size / 2 > x + 1)
+      if(newPos.x + Player.getSize() / 2 > x + 1)
       {
-        newPos.x = x + 1 - Player.size / 2;
+        newPos.x = x + 1 - Player.getSize() / 2;
       }
     } else {
-      if(newPos.y - Player.size / 2 < y)
+      if(newPos.y - Player.getSize() / 2 < y)
       {
-        newPos.y = y + Player.size / 2;
+        newPos.y = y + Player.getSize() / 2;
       }
     }
   }
@@ -131,19 +131,19 @@ void walk(vec2 deltaPos)
   {
     if(newPos.x - x >= newPos.y - y)
     {
-      if(newPos.x - Player.size / 2 < x)
+      if(newPos.x - Player.getSize() / 2 < x)
       {
-        newPos.x = x + Player.size / 2;
+        newPos.x = x + Player.getSize() / 2;
       }
     } else {
-      if(newPos.y - Player.size / 2 < y)
+      if(newPos.y - Player.getSize() / 2 < y)
       {
-        newPos.y = y + Player.size / 2;
+        newPos.y = y + Player.getSize() / 2;
       }
     }
   }
 
-  Player.pos = newPos;
+  Player.setPosition(newPos);
 }
 
 /*
@@ -239,22 +239,22 @@ int main(int argc, char* argv[])
       const uint8_t* pKeystate = SDL_GetKeyboardState(NULL);
       if(pKeystate[SDL_SCANCODE_W])
       {
-        walk(vec2(0, deltaTime).rotate(Player.ang));
+        walk(vec2(0, deltaTime).rotate(Player.getRotation()));
       }
       if(pKeystate[SDL_SCANCODE_S])
       {
-        walk(vec2(0, -deltaTime).rotate(Player.ang));
+        walk(vec2(0, -deltaTime).rotate(Player.getRotation()));
       }
       if(pKeystate[SDL_SCANCODE_D])
       {
-        walk(vec2(deltaTime, 0).rotate(Player.ang));
+        walk(vec2(deltaTime, 0).rotate(Player.getRotation()));
       }
       if(pKeystate[SDL_SCANCODE_A])
       {
-        walk(vec2(-deltaTime, 0).rotate(Player.ang));
+        walk(vec2(-deltaTime, 0).rotate(Player.getRotation()));
       }
 
-      Player.ang -= float(relX) / 180 * SENSITIVITY;
+      Player.setRotation(Player.getRotation() - float(relX) / 180 * SENSITIVITY);
     }
 
     SDL_RenderClear(renderer);

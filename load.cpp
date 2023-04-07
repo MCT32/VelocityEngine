@@ -79,8 +79,9 @@ void load_map()
   }
 
   // Load player position
-  Player.pos.x = load_float(mapfile);
-  Player.pos.y = load_float(mapfile);
+  float x = load_float(mapfile);
+  float y = load_float(mapfile);
+  Player = player(x, y);
 
   mapWidth = load_uint8_t(mapfile);
   mapHeight = load_uint8_t(mapfile);
