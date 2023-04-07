@@ -22,6 +22,7 @@ public:
 	vec2 normalize()
 	{
 		float len = length();
+		if(len == 0) return vec2(0, 0);
 		return vec2(x / len, y / len);
 	}
 
