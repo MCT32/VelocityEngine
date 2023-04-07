@@ -36,6 +36,10 @@ uint8_t mapWidth, mapHeight;
 */
 int main(int argc, char* argv[])
 {
+  init_log();
+  
+  log_info("Initialising window... ");
+
   SDL_Window* window = NULL;
   SDL_Renderer* renderer = NULL;
 
@@ -62,9 +66,12 @@ int main(int argc, char* argv[])
 
   SDL_RenderSetLogicalSize(renderer, 460, 320);
 
+  log_info("Done\n");
+  log_info("Loading map... ");
+
   load_map();
 
-  init_log();
+  log_info("Done\n");
 
   SDL_Event event;
   bool quit = false;

@@ -14,6 +14,13 @@ void end_log()
 
 void log(char* message)
 {
-	printf("%s\n", message);
+	printf("%s", message);
 	log_file.write(message, std::strlen(message));
+}
+
+void log_info(char* message)
+{
+#ifdef LOG_INFO
+	log(message);
+#endif
 }
