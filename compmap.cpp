@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
 
 	mapDest << w << h;
 
-	for(int y = 0; y < h; y++)
+	for(int y = h - 1; y >= 0; y--)
 	{
 		for(int x = 0; x < w; x++)
 		{
