@@ -62,9 +62,9 @@ uint8_t load_uint8_t(std::ifstream &file)
   Parameters: None.
   Returns: Nothing.
 */
-void load_map()
+void load_map(const char* mapName)
 {
-  std::ifstream mapfile ("map.gm", std::ifstream::binary);
+  std::ifstream mapfile (mapName, std::ifstream::binary);
 
   // Load wall colors
   for(int i = 0; i < 8; i++)
