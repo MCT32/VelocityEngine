@@ -123,28 +123,10 @@ int main(int argc, char* argv[])
     if(!paused)
     {
       const uint8_t* pKeystate = SDL_GetKeyboardState(NULL);
-      vec2 wishdir = vec2();
-      if(pKeystate[SDL_SCANCODE_W])
-      {
-        wishdir = wishdir.add(vec2(0, 1).rotate(Player.getRotation()));
-      }
-      if(pKeystate[SDL_SCANCODE_S])
-      {
-        wishdir = wishdir.add(vec2(0, -1).rotate(Player.getRotation()));
-      }
-      if(pKeystate[SDL_SCANCODE_D])
-      {
-        wishdir = wishdir.add(vec2(1, 0).rotate(Player.getRotation()));
-      }
-      if(pKeystate[SDL_SCANCODE_A])
-      {
-        wishdir = wishdir.add(vec2(-1, 0).rotate(Player.getRotation()));
-      }
+      
+      Player.processInput(pKeystate, deltaTime, relX);
 
-      Player.setVelocity(wishdir.normalize());
       Player.update(deltaTime);
-
-      Player.rotate(- float(relX) / 180 * SENSITIVITY);
     }
 
     SDL_RenderClear(renderer);
