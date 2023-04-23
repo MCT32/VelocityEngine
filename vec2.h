@@ -45,6 +45,11 @@ public:
 	{
 		return vec2(x * value, y * value);
 	}
+
+	float dot(vec2 other)
+	{
+		return x * other.x + y * other.y;
+	}
 };
 
 #endif

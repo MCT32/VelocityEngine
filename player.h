@@ -16,6 +16,8 @@ class player : public entity
 
 public:
   void processInput(const uint8_t* pKeystate, float deltaTime, int relX);
+  void accelerate(vec2 wishdir, float deltaTime);
+  void friction(float deltaTime);
 };
 
 #endif

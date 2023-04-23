@@ -31,6 +31,13 @@ color lerp_color(color v1, color v2, float fac)
   return color {lerp(v1.alpha, v2.alpha, fac), lerp(v1.red, v2.red, fac), lerp(v1.green, v2.green, fac), lerp(v1.blue, v2.blue, fac)};
 }
 
+float clip(float value, float lower, float upper)
+{
+  if(value < lower) return lower;
+  if(value > upper) return upper;
+  return value;
+}
+
 /*
   Function: raycast
   Purpose: Casts a ray until it hits a wall.
@@ -111,7 +118,6 @@ bool raycast(vec2 start, vec2 dir, float range, vec2 &end, float &dist, uint8_t 
         end = current;
         dist = abs(tempdist);
         wall = map[cellX + cellY * mapWidth];
-
         return true;
       }
     }

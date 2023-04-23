@@ -128,6 +128,8 @@ void entity::moveAndCollide(vec2 delta)
     if(position.x + size / 2 > x + 1)
     {
       position.x = x + 1 - size / 2;
+
+      if(velocity.x > 0) velocity.x = 0;
     }
   }
 
@@ -137,6 +139,8 @@ void entity::moveAndCollide(vec2 delta)
     if(position.x - size / 2 < x)
     {
       position.x = x + size / 2;
+
+      if(velocity.x < 0) velocity.x = 0;
     }
   }
 
@@ -146,6 +150,8 @@ void entity::moveAndCollide(vec2 delta)
     if(position.y + size / 2 > y + 1)
     {
       position.y = y + 1 - size / 2;
+
+      if(velocity.y > 0) velocity.y = 0;
     }
   }
 
@@ -155,6 +161,8 @@ void entity::moveAndCollide(vec2 delta)
     if(position.y - size / 2 < y)
     {
       position.y = y + size / 2;
+
+      if(velocity.y < 0) velocity.y = 0;
     }
   }
 
@@ -166,11 +174,15 @@ void entity::moveAndCollide(vec2 delta)
       if(position.x + size / 2 > x + 1)
       {
         position.x = x + 1 - size / 2;
+
+        if(velocity.x > 0) velocity.x = 0;
       }
     } else {
       if(position.y + size / 2 > y + 1)
       {
         position.y = y + 1 - size / 2;
+
+        if(velocity.y > 0) velocity.y = 0;
       }
     }
   }
@@ -183,11 +195,15 @@ void entity::moveAndCollide(vec2 delta)
       if(position.x - size / 2 < x)
       {
         position.x = x + size / 2;
+
+        if(velocity.x < 0) velocity.x = 0;
       }
     } else {
       if(position.y + size / 2 > y + 1)
       {
         position.y = y + 1 - size / 2;
+
+        if(velocity.y > 0) velocity.y = 0;
       }
     }
   }
@@ -200,11 +216,15 @@ void entity::moveAndCollide(vec2 delta)
       if(position.x + size / 2 > x + 1)
       {
         position.x = x + 1 - size / 2;
+
+        if(velocity.x > 0) velocity.x = 0;
       }
     } else {
       if(position.y - size / 2 < y)
       {
         position.y = y + size / 2;
+
+        if(velocity.y < 0) velocity.y = 0;
       }
     }
   }
@@ -217,11 +237,15 @@ void entity::moveAndCollide(vec2 delta)
       if(position.x - size / 2 < x)
       {
         position.x = x + size / 2;
+
+        if(velocity.x < 0) velocity.x = 0;
       }
     } else {
       if(position.y - size / 2 < y)
       {
         position.y = y + size / 2;
+
+        if(velocity.y < 0) velocity.y = 0;
       }
     }
   }
