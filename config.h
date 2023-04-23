@@ -6,4 +6,4 @@
 
 #define LOG_INFO 1
 
-#define MAP_NAME "test_rainbow.gm"
+#define MAP_NAME "test_room.gm"
