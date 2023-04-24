@@ -11,5 +11,5 @@
 #define MAX_SPEED 2
 #define MAX_ACCEL MAX_SPEED * 10
 
-#define FRICTION 10
+#define FRICTION 5
 #define STOPSPEED 0.2
