@@ -6,6 +6,7 @@
 
 #include "color.h"
 #include "player.h"
+#include "logging.h"
 
 extern player Player;
 
@@ -19,6 +20,6 @@ color load_color(std::ifstream &file);
 float load_float(std::ifstream &file);
 uint8_t load_uint8_t(std::ifstream &file);
 
-void load_map(const char* mapName);
+bool load_map(const char* mapName);
 
 #endif

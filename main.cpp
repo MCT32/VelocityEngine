@@ -69,7 +69,7 @@ int main(int argc, char* argv[])
   log_info("Done\n");
   log_info("Loading map... ");
 
-  load_map(MAP_NAME);
+  if(!load_map(MAP_NAME)) return -1;
 
   log_info("Done\n");
 

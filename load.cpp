@@ -60,11 +60,16 @@ uint8_t load_uint8_t(std::ifstream &file)
   Purpose: Loads map data from file.
 
   Parameters: None.
-  Returns: Nothing.
+  Returns: True if successful.
 */
-void load_map(const char* mapName)
+bool load_map(const char* mapName)
 {
   std::ifstream mapfile (mapName, std::ifstream::binary);
+  if(mapfile.fail())
+  {
+    log_info("Failed to open map file\n");
+    return false;
+  }
 
   // Load wall colors
   for(int i = 0; i < 8; i++)
@@ -91,4 +96,6 @@ void load_map(const char* mapName)
   mapfile.read(reinterpret_cast<char*>(map), mapWidth * mapHeight * sizeof(uint8_t));
 
   mapfile.close();
+
+  return true;
 }
