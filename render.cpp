@@ -78,14 +78,10 @@ void render_walls(SDL_Renderer *renderer)
         mul = 1;
       }
 
-      if(height > h)
-      {
-        gap = 0;
-        height = h;
-      }
-
       for(int j = 0; j < height; j++)
       {
+	if(gap + j < 0 || gap + j > h) continue;
+
 	uint texY = floor(float(j) / height * cobble->h);
 	uint texX = int(floor(norm ? end.x * cobble->w : end.y * cobble->w)) % cobble->w;
 
