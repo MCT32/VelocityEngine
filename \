@@ -86,15 +86,14 @@ void render_walls(SDL_Renderer *renderer)
 
       for(int j = 0; j < height; j++)
       {
-	uint texY = floor(float(j) / height * cobble->h);
-	uint texX = int(floor(norm ? end.x * cobble->w : end.y * cobble->w)) % cobble->w;
+	int texY = floor(float(j) / height * 64);
 
 	Uint8 red;
 	Uint8 green;
 	Uint8 blue;
 
 	Uint8* pixels;
-	pixels = (Uint8 *)cobble->pixels + texY * cobble->pitch + texX * cobble->format->BytesPerPixel;
+	pixels = (Uint32 *)cobble->pixels + texY;
 
 	SDL_GetRGB(*(Uint32 *)pixels, cobble->format, &red, &green, &blue);
 
