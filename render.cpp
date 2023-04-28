@@ -1,6 +1,6 @@
 #include "render.h"
 
-extern SDL_Surface* cobble;
+extern SDL_Surface* textures[8];
 
 // FIX: Make gradient proportional to width like render_walls.
 // background
@@ -82,17 +82,17 @@ void render_walls(SDL_Renderer *renderer)
       {
 	if(gap + j < 0 || gap + j > h) continue;
 
-	uint texY = floor(float(j) / height * cobble->h);
-	uint texX = int(floor(norm ? end.x * cobble->w : end.y * cobble->w)) % cobble->w;
+	uint texY = floor(float(j) / height * textures[wall-1]->h);
+	uint texX = int(floor(norm ? end.x * textures[wall-1]->w : end.y * textures[wall-1]->w)) % textures[wall-1]->w;
 
 	Uint8 red;
 	Uint8 green;
 	Uint8 blue;
 
 	Uint8* pixels;
-	pixels = (Uint8 *)cobble->pixels + texY * cobble->pitch + texX * cobble->format->BytesPerPixel;
+	pixels = (Uint8 *)textures[wall-1]->pixels + texY * textures[wall-1]->pitch + texX * textures[wall-1]->format->BytesPerPixel;
 
-	SDL_GetRGB(*(Uint32 *)pixels, cobble->format, &red, &green, &blue);
+	SDL_GetRGB(*(Uint32 *)pixels, textures[wall-1]->format, &red, &green, &blue);
 
         SDL_SetRenderDrawColor(renderer, red, green, blue, 255);
 	SDL_RenderDrawPoint(renderer, i, j + gap);

@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <SDL2/SDL_image.h>
 
 #include "color.h"
 #include "player.h"

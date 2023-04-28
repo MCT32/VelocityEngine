@@ -16,8 +16,8 @@
 // Global player struct
 player Player;
 
-// Wall colors
-color colors[8];
+// Wall textures
+SDL_Surface* textures[8];
 
 // Backgound colors
 color background_colors[3];
@@ -25,8 +25,6 @@ color background_colors[3];
 // Layout of the map
 uint8_t *map;
 uint8_t mapWidth, mapHeight;
-
-SDL_Surface* cobble;
 
 /*
   Function: main
@@ -75,8 +73,6 @@ int main(int argc, char* argv[])
   if(!load_map(MAP_NAME)) return -1;
 
   log_info("Done\n");
-
-  cobble = IMG_Load("cobble_stone.png");
 
   SDL_Event event;
   bool quit = false;

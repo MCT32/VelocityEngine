@@ -23,16 +23,15 @@ int main(int argc, char* argv[])
 
 	mapSource.close();
 
-	for(int i = 0; i < 8; i++)
+	uint8_t num_textures = mapJson["walls"].size();
+	mapDest << num_textures;
+
+	char* textures[num_textures];
+	for(int i = 0; i < num_textures; i++)
 	{
-		Json::Value color = mapJson["walls"][i];
-
-		uint8_t alpha = color[0].asUInt();
-		uint8_t red = color[1].asUInt();
-		uint8_t green = color[2].asUInt();
-		uint8_t blue = color[3].asUInt();
-
-		mapDest << alpha << red << green << blue;
+		textures[i] = (char*)malloc(16);
+		strcpy(textures[i], mapJson["walls"][i].asString().c_str());
+		for(int j = 0; j < 16; j++) mapDest << textures[i][j];
 	}
 
 	for(int i = 0; i < 3; i++)
