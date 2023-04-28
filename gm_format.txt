@@ -1,0 +1,5 @@
+8*4 bytes wall colors (uint8 alpha, red, green, blue)
+3*4 bytes background colors (uint8 alpha, red, green, blue)
+2*4 bytes player position (float x, y)
+2*1 byte map size (uint8 width, height)
+x*1 byte wall color/empty (uint8, 0 if empty, 1-9 for color)
