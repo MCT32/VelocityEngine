@@ -18,6 +18,7 @@ player Player;
 
 // Wall textures
 SDL_Surface* textures[8];
+SDL_Surface* missing;
 
 // Backgound colors
 color background_colors[3];

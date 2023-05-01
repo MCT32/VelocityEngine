@@ -13,3 +13,5 @@
 
 #define FRICTION 5
 #define STOPSPEED 0.2
+
+#define TEXTURE_STRING_LENGTH 32

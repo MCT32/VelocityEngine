@@ -2,6 +2,8 @@
 #include <fstream>
 #include <iostream>
 
+#include "config.h"
+
 int main(int argc, char* argv[])
 {
 	Json::Value mapJson;
@@ -29,9 +31,9 @@ int main(int argc, char* argv[])
 	char* textures[num_textures];
 	for(int i = 0; i < num_textures; i++)
 	{
-		textures[i] = (char*)malloc(16);
+		textures[i] = (char*)malloc(TEXTURE_STRING_LENGTH);
 		strcpy(textures[i], mapJson["walls"][i].asString().c_str());
-		for(int j = 0; j < 16; j++) mapDest << textures[i][j];
+		for(int j = 0; j < TEXTURE_STRING_LENGTH; j++) mapDest << textures[i][j];
 	}
 
 	for(int i = 0; i < 3; i++)

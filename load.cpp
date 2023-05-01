@@ -1,6 +1,8 @@
 #include "load.h"
+#include "config.h"
 
 extern SDL_Surface* textures[8];
+extern SDL_Surface* missing;
 
 /*
   Function: load_color
@@ -81,15 +83,26 @@ bool load_map(const char* mapName)
   }
 
   // Load textures
+  missing = IMG_Load("missing.png");
+  if(!missing)
+  {
+    printf("Failed to load fallback texture");
+    return false;
+  }
+
   uint8_t num_textures = load_uint8_t(mapfile);
 
   char* texture_names[num_textures];
-  for(int i; i < num_textures; i++)
+  for(int i = 0; i < num_textures; i++)
   {
-    texture_names[i] = (char*)malloc(16);
-    strcpy(texture_names[i], load_string(mapfile, 16));
+    texture_names[i] = (char*)malloc(TEXTURE_STRING_LENGTH);
+    strcpy(texture_names[i], load_string(mapfile, TEXTURE_STRING_LENGTH));
 
     textures[i] = IMG_Load(texture_names[i]);
+    if(!textures[i]) {
+      printf("Failed to load texture %s, falling back to missing texture\n", texture_names[i]);
+      textures[i] = missing;
+    }
   }
 
   // Load floor, middle and roof colors
