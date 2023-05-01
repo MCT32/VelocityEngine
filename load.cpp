@@ -95,7 +95,7 @@ bool load_map(const char* mapName)
   char* texture_names[num_textures];
   for(int i = 0; i < num_textures; i++)
   {
-    texture_names[i] = (char*)malloc(TEXTURE_STRING_LENGTH);
+    texture_names[i] = reinterpret_cast<char*>(malloc(TEXTURE_STRING_LENGTH));
     strcpy(texture_names[i], load_string(mapfile, TEXTURE_STRING_LENGTH));
 
     textures[i] = IMG_Load(texture_names[i]);
