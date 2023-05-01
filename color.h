@@ -14,7 +14,7 @@ struct color
 
   color mul(float value)
   {
-    return color {alpha, red * value, green * value, blue * value};
+    return color {alpha, static_cast<uint8_t>(value * red), static_cast<uint8_t>(value * green), static_cast<uint8_t>(blue * value)};
   }
 };
 

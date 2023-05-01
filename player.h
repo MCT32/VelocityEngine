@@ -6,7 +6,7 @@
 
 #include "entity.h"
 #include "vec2.h"
-#include "util.h"'
+#include "util.h"
 #include "config.h"
 
 // Defines the player
