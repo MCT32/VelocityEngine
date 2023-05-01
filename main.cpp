@@ -39,15 +39,15 @@ uint8_t mapWidth, mapHeight;
 int main(int argc, char* argv[])
 {
   init_log();
-  
-  log_info("Initialising window... ");
 
+  log(log_level::Info, "Setting up SDL");
+  
   SDL_Window* window = NULL;
   SDL_Renderer* renderer = NULL;
 
   if (SDL_Init(SDL_INIT_VIDEO) < 0)
   {
-    fprintf(stderr, "could not create window: %s\n", SDL_GetError());
+    log(log_level::Error, "Could not initialise SDL: " + std::string(SDL_GetError()));
     return 1;
   }
 
@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
 
   if (window == NULL)
   {
-    fprintf(stderr, "could not create window: %s\n", SDL_GetError());
+    log(log_level::Error, "Could not create window: " + std::string(SDL_GetError()));
     return 1;
   }
 
@@ -68,12 +68,16 @@ int main(int argc, char* argv[])
 
   SDL_RenderSetLogicalSize(renderer, 460, 320);
 
-  log_info("Done\n");
-  log_info("Loading map... ");
+  log(log_level::Info, "Finished setting up SDL");
+  log(log_level::Info, "Loading map");
 
-  if(!load_map(MAP_NAME)) return -1;
+  if(!load_map(MAP_NAME))
+  {
+    log(log_level::Error, "Unable to load map");
+    return -1;
+  }
 
-  log_info("Done\n");
+  log(log_level::Info, "Finished loading map");
 
   SDL_Event event;
   bool quit = false;

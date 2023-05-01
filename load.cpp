@@ -78,7 +78,7 @@ bool load_map(const char* mapName)
   std::ifstream mapfile (mapName, std::ifstream::binary);
   if(mapfile.fail())
   {
-    log_info("Failed to open map file\n");
+    log(log_level::Error, "Failed to open map file\n");
     return false;
   }
 
@@ -86,7 +86,7 @@ bool load_map(const char* mapName)
   missing = IMG_Load("missing.png");
   if(!missing)
   {
-    printf("Failed to load fallback texture");
+    log(log_level::Error, "Failed to load fallback texture");
     return false;
   }
 
@@ -100,7 +100,7 @@ bool load_map(const char* mapName)
 
     textures[i] = IMG_Load(texture_names[i]);
     if(!textures[i]) {
-      printf("Failed to load texture %s, falling back to missing texture\n", texture_names[i]);
+      log(log_level::Error, "Failed to load texture " + std::string(texture_names[i]) + ", falling back to missing texture");
       textures[i] = missing;
     }
   }

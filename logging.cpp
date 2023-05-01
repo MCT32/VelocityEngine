@@ -12,15 +12,8 @@ void end_log()
 	log_file.close();
 }
 
-void log(char* message)
+void log(log_level const level, std::string_view const message)
 {
-	printf("%s", message);
-	log_file.write(message, std::strlen(message));
-}
-
-void log_info(char* message)
-{
-#ifdef LOG_INFO
-	log(message);
-#endif
+	std::cout << "[" << static_cast<char>(level) << "] " << message << "\n";
+	log_file << "[" << static_cast<char>(level) << "] " << message << "\n";
 }
