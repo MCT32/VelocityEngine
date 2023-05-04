@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <stdio.h>
+#include <string>
 
 // Include custom headers
 #include "vec2.h"
@@ -71,7 +72,7 @@ int main(int argc, char* argv[])
   log(log_level::Info, "Finished setting up SDL");
   log(log_level::Info, "Loading map");
 
-  if(!load_map(MAP_NAME))
+  if(!load_map(std::string("map/") + std::string(MAP_NAME)))
   {
     log(log_level::Error, "Unable to load map");
     return -1;

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <SDL2/SDL_image.h>
+#include <string>
 
 #include "color.h"
 #include "player.h"
@@ -21,6 +22,6 @@ color load_color(std::ifstream &file);
 float load_float(std::ifstream &file);
 uint8_t load_uint8_t(std::ifstream &file);
 
-bool load_map(const char* mapName);
+bool load_map(std::string mapName);
 
 #endif

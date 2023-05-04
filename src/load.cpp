@@ -73,7 +73,7 @@ char* load_string(std::ifstream &file, int buffer_length)
   Parameters: None.
   Returns: True if successful.
 */
-bool load_map(const char* mapName)
+bool load_map(std::string mapName)
 {
   std::ifstream mapfile (mapName, std::ifstream::binary);
   if(mapfile.fail())
@@ -83,7 +83,7 @@ bool load_map(const char* mapName)
   }
 
   // Load textures
-  missing = IMG_Load("missing.png");
+  missing = IMG_Load("res/missing.png");
   if(!missing)
   {
     log(log_level::Error, "Failed to load fallback texture");
@@ -92,15 +92,14 @@ bool load_map(const char* mapName)
 
   uint8_t num_textures = load_uint8_t(mapfile);
 
-  char* texture_names[num_textures];
+  std::string texture_names[num_textures];
   for(int i = 0; i < num_textures; i++)
   {
-    texture_names[i] = reinterpret_cast<char*>(malloc(TEXTURE_STRING_LENGTH));
-    strcpy(texture_names[i], load_string(mapfile, TEXTURE_STRING_LENGTH));
+    texture_names[i] = load_string(mapfile, TEXTURE_STRING_LENGTH);
 
-    textures[i] = IMG_Load(texture_names[i]);
+    textures[i] = IMG_Load((std::string("res/") + texture_names[i]).c_str());
     if(!textures[i]) {
-      log(log_level::Error, "Failed to load texture " + std::string(texture_names[i]) + ", falling back to missing texture");
+      log(log_level::Error, "Failed to load texture " + texture_names[i] + ", falling back to missing texture");
       textures[i] = missing;
     }
   }
