@@ -3,7 +3,7 @@
 - [x] Box collisions
 - [x] Better controls with mouse
 - [x] Better movement with momentum
-- [ ] Textures
+- [x] Textures
 - [ ] Port to vulkan
 - [ ] Entities
 - [ ] Multiplayer
