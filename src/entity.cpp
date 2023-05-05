@@ -1,60 +1,18 @@
 #include "entity.h"
 
-entity::entity(float x, float y, float _rotation, float _size)
-{
-	position = vec2(x, y);
-	rotation = _rotation;
+entity::entity(float x, float y, float rotation, float size): position(vec2(x, y)), rotation(rotation), size(size){}
 
-	size = _size;
-}
+entity::entity(vec2 position, float rotation, float size): position(position), rotation(rotation), size(size){}
 
-entity::entity(vec2 _position, float _rotation, float _size)
-{
-	position = _position;
-	rotation = _rotation;
+entity::entity(float x, float y, float rotation): position(vec2(x, y)), rotation(rotation), size(DEFAULT_SIZE){}
 
-	size = _size;
-}
+entity::entity(vec2 position, float rotation): position(position), rotation(rotation), size(DEFAULT_SIZE){}
 
-entity::entity(float x, float y, float _rotation)
-{
-	position = vec2(x, y);
-	rotation = _rotation;
+entity::entity(float x, float y): position(vec2(x, y)), rotation(DEFAULT_ROTATION), size(DEFAULT_SIZE){}
 
-	size = DEFAULT_SIZE;
-}
+entity::entity(vec2 position): position(position), rotation(DEFAULT_ROTATION), size(DEFAULT_SIZE){}
 
-entity::entity(vec2 _position, float _rotation)
-{
-	position = _position;
-	rotation = _rotation;
-
-	size = DEFAULT_SIZE;
-}
-
-entity::entity(float x, float y)
-{
-	position = vec2(x, y);
-	rotation = DEFAULT_ROTATION;
-
-	size = DEFAULT_SIZE;
-}
-
-entity::entity(vec2 _position)
-{
-	position = _position;
-	rotation = DEFAULT_ROTATION;
-
-	size = DEFAULT_SIZE;
-}
-
-entity::entity()
-{
-	position = DEFAULT_POSITION;
-	rotation = DEFAULT_ROTATION;
-
-	size = DEFAULT_SIZE;
-}
+entity::entity(): position(DEFAULT_POSITION), rotation(DEFAULT_ROTATION), size(DEFAULT_SIZE){}
 
 void entity::setPosition(float x, float y)
 {
