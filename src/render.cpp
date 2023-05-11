@@ -90,9 +90,9 @@ void render_walls(SDL_Renderer *renderer)
 	Uint8 blue;
 
 	Uint8* pixels;
-	pixels = (Uint8 *)textures[wall-1]->pixels + texY * textures[wall-1]->pitch + texX * textures[wall-1]->format->BytesPerPixel;
+	pixels = reinterpret_cast<Uint8 *>(textures[wall-1]->pixels) + texY * textures[wall-1]->pitch + texX * textures[wall-1]->format->BytesPerPixel;
 
-	SDL_GetRGB(*(Uint32 *)pixels, textures[wall-1]->format, &red, &green, &blue);
+	SDL_GetRGB(*reinterpret_cast<Uint32 *>(pixels), textures[wall-1]->format, &red, &green, &blue);
 
         SDL_SetRenderDrawColor(renderer, red, green, blue, 255);
 	SDL_RenderDrawPoint(renderer, i, j + gap);
