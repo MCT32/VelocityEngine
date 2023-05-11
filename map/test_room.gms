@@ -34,7 +34,7 @@
 
 	"entities": [
 		{
-			"id": 0,
+			"id": "player_start",
 			"position": [5.5, 7.5],
 			"rotation": 0.0
 		}

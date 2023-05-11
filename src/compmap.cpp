@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "config.h"
+#include "entity_list.h"
 
 int main(int argc, char* argv[])
 {
@@ -73,7 +74,7 @@ int main(int argc, char* argv[])
 
 	for(int i = 0; i < entity_count; i++)
 	{
-		uint8_t id = mapJson["entities"][i]["id"].asUInt();
+		uint8_t id = entity_list[mapJson["entities"][i]["id"].asString()];
 		float x = mapJson["entities"][i]["position"][0].asFloat();
 		float y = mapJson["entities"][i]["position"][1].asFloat();
 		float rot = mapJson["entities"][i]["rotation"].asFloat();

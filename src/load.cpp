@@ -134,7 +134,7 @@ bool load_map(std::string mapName)
     switch(id)
     {
       case 0:
-	log(log_level::Info, "Found entity id 0");
+	log(log_level::Info, "Found player_start entity");
         Player = player(x, y, rot);
 	break;
       default:
