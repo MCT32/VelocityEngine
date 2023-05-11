@@ -98,6 +98,8 @@ int main(int argc, char* argv[])
     int relX = 0;
     int relY = 0;
 
+    bool should_screenshot = false;
+
     while (SDL_PollEvent(&event))
     {
       switch (event.type)
@@ -118,6 +120,9 @@ int main(int argc, char* argv[])
 	      break;
 	    case SDL_SCANCODE_F1:
 	      quit = true;
+	      break;
+	    case SDL_SCANCODE_F2:
+	      should_screenshot = true;
 	      break;
 	    default:
 	      break;
@@ -143,6 +148,8 @@ int main(int argc, char* argv[])
     render_walls(renderer);
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+
+    if(should_screenshot) screenshot(renderer);
 
     SDL_RenderPresent(renderer);
   }
