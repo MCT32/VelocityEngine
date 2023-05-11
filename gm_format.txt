@@ -1,6 +1,10 @@
 1*1 byte number of textures (uint8)
 8*x bytes wall texture names (char* filename)
 3*4 bytes background colors (uint8 alpha, red, green, blue)
-2*4 bytes player position (float x, y)
 2*1 byte map size (uint8 width, height)
 x*1 byte wall color/empty (uint8, 0 if empty, 1-9 for color)
+1*1 byte number of entities
+x*x entities:
+	1x1 byte id
+	2x4 bytes position
+	1x4 bytes rotation

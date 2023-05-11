@@ -1,3 +1,4 @@
+#include <string>
 #include "load.h"
 #include "config.h"
 
@@ -78,11 +79,12 @@ bool load_map(std::string mapName)
   std::ifstream mapfile (mapName, std::ifstream::binary);
   if(mapfile.fail())
   {
-    log(log_level::Error, "Failed to open map file\n");
+    log(log_level::Error, "Failed to open map file");
     return false;
   }
 
   // Load textures
+  log(log_level::Info, "Loading missing texture...");
   missing = IMG_Load("res/missing.png");
   if(!missing)
   {
@@ -91,11 +93,13 @@ bool load_map(std::string mapName)
   }
 
   uint8_t num_textures = load_uint8_t(mapfile);
+  log(log_level::Info, "Loading " + std::to_string(num_textures) + " textures...");
 
   std::string texture_names[num_textures];
   for(int i = 0; i < num_textures; i++)
   {
-    texture_names[i] = load_string(mapfile, TEXTURE_STRING_LENGTH);
+    texture_names[i] = std::string(load_string(mapfile, TEXTURE_STRING_LENGTH));
+    log(log_level::Info, "Loading texture " + texture_names[i]);
 
     textures[i] = IMG_Load((std::string("res/") + texture_names[i]).c_str());
     if(!textures[i]) {
@@ -110,17 +114,34 @@ bool load_map(std::string mapName)
     background_colors[i] = load_color(mapfile);
   }
 
-  // Load player position
-  float x = load_float(mapfile);
-  float y = load_float(mapfile);
-  Player = player(x, y);
-
   mapWidth = load_uint8_t(mapfile);
   mapHeight = load_uint8_t(mapfile);
+
+  log(log_level::Info, "Loading map with dimentions " + std::to_string(mapWidth) + "x" + std::to_string(mapHeight));
 
   map = new uint8_t[mapWidth * mapHeight];
 
   mapfile.read(reinterpret_cast<char*>(map), mapWidth * mapHeight * sizeof(uint8_t));
+
+  uint8_t num_entities = load_uint8_t(mapfile);
+  for(int i = 0; i < num_entities; i++)
+  {
+    uint8_t id = load_uint8_t(mapfile);
+    float x = load_float(mapfile);
+    float y = load_float(mapfile);
+    float rot = load_float(mapfile);
+
+    switch(id)
+    {
+      case 0:
+	log(log_level::Info, "Found entity id 0");
+        Player = player(x, y, rot);
+	break;
+      default:
+	log(log_level::Warning, "Entity id not recognised, skipping");
+	break;
+    }
+  }
 
   mapfile.close();
 
