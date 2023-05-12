@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
 
   renderer = SDL_CreateRenderer(window, -1, 0);
 
-  SDL_RenderSetLogicalSize(renderer, 460, 320);
+  SDL_RenderSetLogicalSize(renderer, 640, 480);
 
   log(log_level::Info, "Finished setting up SDL");
   log(log_level::Info, "Loading map");
