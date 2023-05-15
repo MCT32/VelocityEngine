@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
   }
 
   window = SDL_CreateWindow(
-    "COOM",
+    "Velocity Engine",
     SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
     680, 480,
     SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
