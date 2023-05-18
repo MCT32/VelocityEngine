@@ -23,7 +23,7 @@ jobs:
         submodules: 'true'
     
     - name: Install Dependencies
-      run: apt install libsdl2 libsdl2-image libsdl2-ttf
+      run: sudo apt-get install libsdl2 libsdl2-image libsdl2-ttf
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
