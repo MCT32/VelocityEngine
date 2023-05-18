@@ -1,6 +1,7 @@
 // Include external headers
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 #include <string>
 
@@ -11,6 +12,7 @@
 #include "render.h"
 #include "player.h"
 #include "load.h"
+#include "ui.h"
 #include "logging.h"
 #include "config.h"
 
@@ -23,6 +25,8 @@ SDL_Surface* missing;
 
 // Backgound colors
 color background_colors[3];
+
+TTF_Font* debug_font;
 
 // Layout of the map
 uint8_t *map;
@@ -51,6 +55,10 @@ int main(int argc, char* argv[])
     log(log_level::Error, "Could not initialise SDL: " + std::string(SDL_GetError()));
     return 1;
   }
+
+  TTF_Init();
+  debug_font = TTF_OpenFont("arial.ttf", 25);
+  if(!debug_font) log(log_level::Error, "Unable to load font");
 
   window = SDL_CreateWindow(
     "Velocity Engine",
@@ -94,6 +102,7 @@ int main(int argc, char* argv[])
     NOW = SDL_GetPerformanceCounter();
 
     double deltaTime = (double)((NOW - LAST)*1000 / (double)SDL_GetPerformanceFrequency()) / 1000;
+    int fps = 1 / deltaTime;
 
     int relX = 0;
     int relY = 0;
@@ -147,12 +156,19 @@ int main(int argc, char* argv[])
 
     render_walls(renderer);
 
+    render_ui(renderer, fps);
+
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
     if(should_screenshot) screenshot(renderer);
 
     SDL_RenderPresent(renderer);
   }
+
+  TTF_CloseFont(debug_font);
+
+  TTF_Quit();
+  SDL_Quit();
 
   end_log();
 }
