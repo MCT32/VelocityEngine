@@ -9,6 +9,7 @@
 #include "vec2.h"
 #include "color.h"
 #include "util.h"
+#include "gamestate.h"
 #include "render.h"
 #include "player.h"
 #include "load.h"
@@ -31,6 +32,22 @@ TTF_Font* debug_font;
 // Layout of the map
 uint8_t *map;
 uint8_t mapWidth, mapHeight;
+
+void toggle_pause()
+{
+  gamestate.paused = !gamestate.paused;
+  if(gamestate.paused)
+  {
+    SDL_SetRelativeMouseMode(SDL_FALSE);
+  } else {
+    SDL_SetRelativeMouseMode(SDL_TRUE);
+  }
+}
+
+void quit()
+{
+  gamestate.quit = true;
+}
 
 /*
   Function: main
@@ -89,8 +106,8 @@ int main(int argc, char* argv[])
   log(log_level::Info, "Finished loading map");
 
   SDL_Event event;
-  bool quit = false;
-  bool paused = false;
+  gamestate.quit = false;
+  gamestate.paused = false;
 
   uint64_t NOW = SDL_GetPerformanceCounter();
 
@@ -98,9 +115,9 @@ int main(int argc, char* argv[])
 
   menuitem pauseMenu[] =
   {
-    {"resume"},
-    {"options"},
-    {"quit"}
+    {"resume", toggle_pause},
+    {"options", toggle_pause},
+    {"quit", quit}
   };
 
   menu pauseDef =
@@ -113,7 +130,7 @@ int main(int argc, char* argv[])
 
   menu* currentMenu = &pauseDef;
 
-  while (!quit)
+  while (!gamestate.quit)
   {
     uint64_t LAST = NOW;
     NOW = SDL_GetPerformanceCounter();
@@ -130,14 +147,14 @@ int main(int argc, char* argv[])
     {
       switch (event.type)
       {
-        case SDL_QUIT: quit = true; break;
+        case SDL_QUIT: gamestate.quit = true; break;
         case SDL_MOUSEMOTION: relX += event.motion.xrel; relY += event.motion.yrel;
         case SDL_KEYDOWN:
           switch (event.key.keysym.scancode)
 	  {
 	    case SDL_SCANCODE_ESCAPE:
-	      paused = !paused;
-	      if(paused)
+	      gamestate.paused = !gamestate.paused;
+	      if(gamestate.paused)
 	      {
 		SDL_SetRelativeMouseMode(SDL_FALSE);
 	      } else {
@@ -145,13 +162,13 @@ int main(int argc, char* argv[])
 	      }
 	      break;
 	    case SDL_SCANCODE_F1:
-	      quit = true;
+	      gamestate.quit = true;
 	      break;
 	    case SDL_SCANCODE_F2:
 	      should_screenshot = true;
 	      break;
 	    case SDL_SCANCODE_DOWN:
-	      if(paused){
+	      if(gamestate.paused){
 	        if(currentMenu->selection == currentMenu->itemCount - 1)
 		{
 		  currentMenu->selection = 0;
@@ -161,7 +178,7 @@ int main(int argc, char* argv[])
 	      }
 	      break;
 	    case SDL_SCANCODE_UP:
-	      if(paused){
+	      if(gamestate.paused){
 	        if(currentMenu->selection == 0)
 		{
 		  currentMenu->selection = currentMenu->itemCount - 1;
@@ -169,6 +186,9 @@ int main(int argc, char* argv[])
 		  currentMenu->selection--;
 		}
 	      }
+	      break;
+	    case SDL_SCANCODE_RETURN:
+	      if(gamestate.paused) (currentMenu->items[currentMenu->selection].routine)();
 	      break;
 	    default:
 	      break;
@@ -178,7 +198,7 @@ int main(int argc, char* argv[])
       }
     }
 
-    if(!paused)
+    if(!gamestate.paused)
     {
       const uint8_t* pKeystate = SDL_GetKeyboardState(NULL);
       
@@ -193,7 +213,7 @@ int main(int argc, char* argv[])
 
     render_walls(renderer);
 
-    render_ui(renderer, fps, paused, currentMenu);
+    render_ui(renderer, fps, gamestate.paused, currentMenu);
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 

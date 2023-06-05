@@ -6,6 +6,7 @@ extern TTF_Font* debug_font;
 
 typedef struct {
   std::string name;
+  void (*routine)();
 } menuitem;
 
 typedef struct menu_s {
