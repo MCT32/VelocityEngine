@@ -96,6 +96,23 @@ int main(int argc, char* argv[])
 
   SDL_SetRelativeMouseMode(SDL_TRUE);
 
+  menuitem pauseMenu[] =
+  {
+    {"resume"},
+    {"options"},
+    {"quit"}
+  };
+
+  menu pauseDef =
+  {
+    3,
+    pauseMenu,
+    NULL,
+    0
+  };
+
+  menu* currentMenu = &pauseDef;
+
   while (!quit)
   {
     uint64_t LAST = NOW;
@@ -133,6 +150,26 @@ int main(int argc, char* argv[])
 	    case SDL_SCANCODE_F2:
 	      should_screenshot = true;
 	      break;
+	    case SDL_SCANCODE_DOWN:
+	      if(paused){
+	        if(currentMenu->selection == currentMenu->itemCount - 1)
+		{
+		  currentMenu->selection = 0;
+		} else {
+		  currentMenu->selection++;
+		}
+	      }
+	      break;
+	    case SDL_SCANCODE_UP:
+	      if(paused){
+	        if(currentMenu->selection == 0)
+		{
+		  currentMenu->selection = currentMenu->itemCount - 1;
+		} else {
+		  currentMenu->selection--;
+		}
+	      }
+	      break;
 	    default:
 	      break;
 	  }
@@ -156,7 +193,7 @@ int main(int argc, char* argv[])
 
     render_walls(renderer);
 
-    render_ui(renderer, fps);
+    render_ui(renderer, fps, paused, currentMenu);
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
