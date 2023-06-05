@@ -1,6 +1,6 @@
 #include "ui.h"
 
-void render_text(SDL_Renderer* renderer, SDL_Color color, std::string text, int x, int y)
+void render_text(SDL_Renderer* renderer, SDL_Color color, const std::string text, int x, int y)
 {
   SDL_Surface* surface = TTF_RenderText_Solid(debug_font, text.c_str(), color);
   SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
