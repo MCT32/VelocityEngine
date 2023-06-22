@@ -8,7 +8,6 @@
 
 // Include custom headers
 #include "vec2.h"
-#include "color.h"
 #include "util.h"
 #include "gamestate.h"
 #include "render.h"
@@ -26,7 +25,7 @@ std::map<std::string, SDL_Surface*> textures;
 std::string wall_textures[8];
 
 // Backgound colors
-color background_colors[3];
+SDL_Color background_colors[3];
 
 TTF_Font* debug_font;
 

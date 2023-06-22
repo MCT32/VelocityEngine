@@ -9,7 +9,7 @@ find_package(SDL2_image REQUIRED)
 find_package(SDL2_ttf REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS} ${SDL2_TTF_INCLUDE_DIRS})
 
-add_executable(VelEngine main.cpp color.cpp entity.cpp load.cpp logging.cpp player.cpp render.cpp ui.cpp util.cpp)
+add_executable(VelEngine main.cpp entity.cpp load.cpp logging.cpp player.cpp render.cpp ui.cpp util.cpp)
 target_link_libraries(VelEngine ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${SDL2_TTF_LIBRARIES})
 
 project(compmap)

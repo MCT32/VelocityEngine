@@ -17,7 +17,7 @@ void render_background(SDL_Renderer *renderer)
   {
     float v = float(y) / h;
 
-    color col;
+    SDL_Color col;
     if(v < 0.5)
     {
       col = lerp_color(background_colors[1], background_colors[0], v * 2);
@@ -25,7 +25,7 @@ void render_background(SDL_Renderer *renderer)
       col = lerp_color(background_colors[2], background_colors[1], v * 2 - 1);
     }
 
-    SDL_SetRenderDrawColor(renderer, col.red, col.green, col.blue, col.alpha);
+    SDL_SetRenderDrawColor(renderer, col.r, col.g, col.b, col.a);
     SDL_RenderDrawLine(renderer, 0, y, w, y);
   }
 }

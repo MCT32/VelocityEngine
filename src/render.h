@@ -2,7 +2,6 @@
 #include <string>
 #include <map>
 
-#include "color.h"
 #include "util.h"
 #include "player.h"
 #include "config.h"
@@ -10,8 +9,7 @@
 
 extern player Player;
 
-extern color colors[];
-extern color background_colors[];
+extern SDL_Color background_colors[];
 extern std::string wall_textures[8];
 
 void render_background(SDL_Renderer *renderer);

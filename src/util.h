@@ -1,7 +1,6 @@
 #ifndef UTIL_H
 #define UTIL_H 1
 
-#include "color.h"
 #include "vec2.h"
 #include "player.h"
 
@@ -11,7 +10,7 @@ extern uint8_t *map;
 template<typename T>
 T lerp(T v1, T v2, float fac);
 
-color lerp_color(color v1, color v2, float fac);
+SDL_Color lerp_color(SDL_Color v1, SDL_Color v2, float fac);
 
 float clip(float value, float lower, float upper);
 

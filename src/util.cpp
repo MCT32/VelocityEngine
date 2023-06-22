@@ -26,9 +26,9 @@ T lerp(T v1, T v2, float fac)
     fac: Interpolation factor.
   Returns: Interpolated color.
 */
-color lerp_color(color v1, color v2, float fac)
+SDL_Color lerp_color(SDL_Color v1, SDL_Color v2, float fac)
 {
-  return color {lerp(v1.alpha, v2.alpha, fac), lerp(v1.red, v2.red, fac), lerp(v1.green, v2.green, fac), lerp(v1.blue, v2.blue, fac)};
+  return {v1.r * fac + v2.r * (1 - fac), v1.g * fac + v2.g * (1 - fac), v1.b * fac + v2.b * (1 - fac), v1.a * fac + v2.a * (1 - fac)};
 }
 
 float clip(float value, float lower, float upper)

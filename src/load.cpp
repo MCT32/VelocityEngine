@@ -14,7 +14,7 @@ extern std::string wall_textures[8];
     file: File to load from.
   Returns: Color loaded from file.
 */
-color load_color(std::ifstream &file)
+SDL_Color load_color(std::ifstream &file)
 {
   char* buffer = new char[4 * sizeof(uint8_t)];
   file.read(&buffer[0], 4 * sizeof(uint8_t));
@@ -26,7 +26,7 @@ color load_color(std::ifstream &file)
 
   delete[] buffer;
 
-  return color {alpha, red, green, blue};
+  return {red, green, blue, alpha};
 }
 
 /*
