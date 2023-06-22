@@ -1,6 +1,6 @@
 #include "render.h"
 
-extern SDL_Surface* textures[8];
+extern std::map<std::string, SDL_Surface*> textures;
 
 // FIX: Make gradient proportional to width like render_walls.
 // background
@@ -61,6 +61,8 @@ void render_walls(SDL_Renderer *renderer)
       int height = w / 2 / camdist;
       int gap = (h - height) / 2;
 
+      SDL_Surface* texture = textures[wall_textures[wall-1]];
+
       float mul;
       if(norm)
       {
@@ -82,17 +84,17 @@ void render_walls(SDL_Renderer *renderer)
       {
 	if(gap + j < 0 || gap + j > h) continue;
 
-	uint texY = floor(float(j) / height * textures[wall-1]->h);
-	uint texX = int(floor(norm ? end.x * textures[wall-1]->w : end.y * textures[wall-1]->w)) % textures[wall-1]->w;
+	uint texY = floor(float(j) / height * texture->h);
+	uint texX = int(floor(norm ? end.x * texture->w : end.y * texture->w)) % texture->w;
 
 	Uint8 red;
 	Uint8 green;
 	Uint8 blue;
 
 	Uint8* pixels;
-	pixels = reinterpret_cast<Uint8 *>(textures[wall-1]->pixels) + texY * textures[wall-1]->pitch + texX * textures[wall-1]->format->BytesPerPixel;
+	pixels = reinterpret_cast<Uint8 *>(texture->pixels) + texY * texture->pitch + texX * texture->format->BytesPerPixel;
 
-	SDL_GetRGB(*reinterpret_cast<Uint32 *>(pixels), textures[wall-1]->format, &red, &green, &blue);
+	SDL_GetRGB(*reinterpret_cast<Uint32 *>(pixels), texture->format, &red, &green, &blue);
 
         SDL_SetRenderDrawColor(renderer, red, green, blue, 255);
 	SDL_RenderDrawPoint(renderer, i, j + gap);

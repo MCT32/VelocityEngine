@@ -4,6 +4,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 #include <string>
+#include <map>
 
 // Include custom headers
 #include "vec2.h"
@@ -20,9 +21,9 @@
 // Global player struct
 player Player;
 
-// Wall textures
-SDL_Surface* textures[8];
-SDL_Surface* missing;
+// Textures
+std::map<std::string, SDL_Surface*> textures;
+std::string wall_textures[8];
 
 // Backgound colors
 color background_colors[3];

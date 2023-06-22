@@ -1,10 +1,9 @@
 #include <string>
-#include <map>
 #include "load.h"
 #include "config.h"
 
-extern std::map<std::string, SDL_Surface*> textures;
-extern std::string wall_textures[8];
+extern SDL_Surface* textures[8];
+extern SDL_Surface* missing;
 
 /*
   Function: load_color
@@ -68,29 +67,6 @@ char* load_string(std::ifstream &file, int buffer_length)
   return buffer;
 }
 
-void load_texture(std::string name)
-{
-  SDL_Surface* tex;
-
-  tex = IMG_Load(("res/" + name + ".png").c_str());
-
-  if(!tex) tex = IMG_Load(("res/" + std::string(name) + ".jpg").c_str());
-
-  if(!tex)
-  {
-    log(log_level::Error, "Could not load texture.");
-    return;
-  }
-
-  textures.insert({name, tex});
-}
-
-void unload_texture(std::string name)
-{
-  SDL_FreeSurface(textures[name]);
-  textures.erase(name);
-}
-
 /*
   Function: load_map
   Purpose: Loads map data from file.
@@ -109,7 +85,12 @@ bool load_map(std::string mapName)
 
   // Load textures
   log(log_level::Info, "Loading missing texture...");
-  load_texture("MISSING");
+  missing = IMG_Load("res/MISSING.png");
+  if(!missing)
+  {
+    log(log_level::Error, "Failed to load fallback texture");
+    return false;
+  }
 
   uint8_t num_textures = load_uint8_t(mapfile);
   log(log_level::Info, "Loading " + std::to_string(num_textures) + " textures...");
@@ -120,8 +101,11 @@ bool load_map(std::string mapName)
     texture_names[i] = std::string(load_string(mapfile, TEXTURE_STRING_LENGTH));
     log(log_level::Info, "Loading texture " + texture_names[i]);
 
-    wall_textures[i] = texture_names[i];
-    load_texture(texture_names[i]);
+    textures[i] = IMG_Load((std::string("res/") + texture_names[i]).c_str());
+    if(!textures[i]) {
+      log(log_level::Error, "Failed to load texture " + texture_names[i] + ", falling back to missing texture");
+      textures[i] = missing;
+    }
   }
 
   // Load floor, middle and roof colors

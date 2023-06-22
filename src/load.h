@@ -21,6 +21,7 @@ extern uint8_t *map;
 color load_color(std::ifstream &file);
 float load_float(std::ifstream &file);
 uint8_t load_uint8_t(std::ifstream &file);
+void load_texture(std::string name);
 
 bool load_map(std::string mapName);
 

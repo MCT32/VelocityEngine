@@ -1,8 +1,8 @@
 {
 	"walls": [
-		"cobble_stone.png",
-		"seth.png",
-		"rahul.jpg"
+		"COBBLE",
+		"SETH",
+		"RAHUL"
 	],
 
 	"background": [
