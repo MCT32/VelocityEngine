@@ -12,7 +12,9 @@ extern player Player;
 extern SDL_Color background_colors[];
 extern std::string wall_textures[8];
 
-void render_background(SDL_Renderer *renderer);
+void set_pixel(SDL_Surface* surface, int x, int y, SDL_Color color);
+
+void render_background(SDL_Surface *surface);
 
 void render_walls(SDL_Renderer *renderer);
 

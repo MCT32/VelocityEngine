@@ -2,20 +2,25 @@
 
 extern std::map<std::string, SDL_Surface*> textures;
 
+void set_pixel(SDL_Surface* surface, int x, int y, SDL_Color color)
+{
+  Uint32 * pixel = (Uint32 *) ((Uint8 *) surface->pixels
+		  + y * surface->pitch
+		  + x * surface->format->BytesPerPixel);
+  *pixel = SDL_MapRGBA(surface->format, color.r, color.g, color.b, color.a);
+}
+
 // FIX: Make gradient proportional to width like render_walls.
 // background
 // Purpose: Draws the background gradient.
 // Parameters:
 //   renderer: The renderer to draw with.
 // Returns: void
-void render_background(SDL_Renderer *renderer)
+void render_background(SDL_Surface *surface)
 {
-  int w, h;
-  SDL_RenderGetLogicalSize(renderer, &w, &h);
-
-  for(int y = 0; y < h; y++)
+  for(int y = 0; y < surface->h; y++)
   {
-    float v = float(y) / h;
+    float v = float(y) / surface->h;
 
     SDL_Color col;
     if(v < 0.5)
@@ -25,8 +30,10 @@ void render_background(SDL_Renderer *renderer)
       col = lerp_color(background_colors[2], background_colors[1], v * 2 - 1);
     }
 
-    SDL_SetRenderDrawColor(renderer, col.r, col.g, col.b, col.a);
-    SDL_RenderDrawLine(renderer, 0, y, w, y);
+    for(int x = 0; x < surface->w; x++)
+    {
+      set_pixel(surface, x, y, col);
+    }
   }
 }
 

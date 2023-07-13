@@ -205,13 +205,15 @@ int main(int argc, char* argv[])
 
     surface = SDL_GetWindowSurface(window);
 
-    //render_background(renderer);
+    render_background(surface);
 
     //render_walls(renderer);
 
     //render_ui(renderer, fps, gamestate.paused, currentMenu);
 
     //if(should_screenshot) screenshot(renderer);
+
+    SDL_UpdateWindowSurface(window);
   }
 
   TTF_CloseFont(debug_font);
