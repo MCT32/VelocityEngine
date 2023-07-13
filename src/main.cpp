@@ -209,7 +209,7 @@ int main(int argc, char* argv[])
 
     render_walls(surface);
 
-    //render_ui(renderer, fps, gamestate.paused, currentMenu);
+    render_ui(surface, fps, gamestate.paused, currentMenu);
 
     //if(should_screenshot) screenshot(renderer);
 

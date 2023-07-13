@@ -16,7 +16,7 @@ typedef struct menu_s {
   unsigned int selection;
 } menu;
 
-void render_text(SDL_Renderer* renderer, SDL_Color color, const std::string text, int x, int y);
-void render_fps(SDL_Renderer* renderer, int fps);
-void render_menu(SDL_Renderer* renderer, menu* currentMenu);
-void render_ui(SDL_Renderer* renderer, int fps, bool paused, menu* currentMenu);
+void render_text(SDL_Surface* surface, SDL_Color color, const std::string text, int x, int y);
+void render_fps(SDL_Surface* surface, int fps);
+void render_menu(SDL_Surface* surface, menu* currentMenu);
+void render_ui(SDL_Surface* surface, int fps, bool paused, menu* currentMenu);
