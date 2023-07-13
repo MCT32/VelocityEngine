@@ -4,6 +4,8 @@ extern std::map<std::string, SDL_Surface*> textures;
 
 void set_pixel(SDL_Surface* surface, int x, int y, SDL_Color color)
 {
+  if(x < 0 || x >= surface->w || y < 0 || y >= surface->h) return;
+
   Uint32 * pixel = (Uint32 *) ((Uint8 *) surface->pixels
 		  + y * surface->pitch
 		  + x * surface->format->BytesPerPixel);
@@ -127,4 +129,27 @@ void screenshot(SDL_Renderer *renderer)
   SDL_FreeSurface(surface);
 
   log(log_level::Info, "Took screenshot");
+}
+
+void render_profiler(SDL_Surface* surface, double background, double walls, double ui) {
+  double total = background + walls + ui;
+
+  float prop_background = background / total;
+  float prop_walls = walls / total;
+  float prop_ui = ui / total;
+
+  for(int i = 0; i < prop_background * surface->h; i++)
+  {
+    set_pixel(surface, 0, i, {255, 0, 0, 255});
+  }
+
+  for(int i = prop_background * surface->h; i < (prop_background + prop_walls) * surface->h; i++)
+  {
+    set_pixel(surface, 0, i, {0, 255, 0, 255});
+  }
+
+  for(int i = (prop_background + prop_walls) * surface->h; i < surface->h; i++)
+  {
+    set_pixel(surface, 0, i, {0, 0, 255, 255});
+  }
 }

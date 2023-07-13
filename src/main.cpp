@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string>
 #include <map>
+#include <chrono>
 
 // Include custom headers
 #include "vec2.h"
@@ -105,6 +106,8 @@ int main(int argc, char* argv[])
   gamestate.quit = false;
   gamestate.paused = false;
 
+  bool profile = false;
+
   uint64_t NOW = SDL_GetPerformanceCounter();
 
   SDL_SetRelativeMouseMode(SDL_TRUE);
@@ -163,6 +166,9 @@ int main(int argc, char* argv[])
 	    case SDL_SCANCODE_F2:
 	      should_screenshot = true;
 	      break;
+	    case SDL_SCANCODE_F3:
+	      profile = !profile;
+	      break;
 	    case SDL_SCANCODE_DOWN:
 	      if(gamestate.paused){
 	        if(currentMenu->selection == currentMenu->itemCount - 1)
@@ -205,12 +211,20 @@ int main(int argc, char* argv[])
 
     surface = SDL_GetWindowSurface(window);
 
+    auto t1 = std::chrono::high_resolution_clock::now();
     render_background(surface);
-
+    auto t2 = std::chrono::high_resolution_clock::now();
     render_walls(surface);
-
+    auto t3 = std::chrono::high_resolution_clock::now();
     render_ui(surface, fps, gamestate.paused, currentMenu);
+    auto t4 = std::chrono::high_resolution_clock::now();
 
+    std::chrono::duration<double, std::milli> time_background = t2 - t1;
+    std::chrono::duration<double, std::milli> time_walls = t3 - t2;
+    std::chrono::duration<double, std::milli> time_ui = t4 - t3;
+
+    if(profile) render_profiler(surface, time_background.count(), time_walls.count(), time_ui.count());
+    
     //if(should_screenshot) screenshot(renderer);
 
     SDL_UpdateWindowSurface(window);
