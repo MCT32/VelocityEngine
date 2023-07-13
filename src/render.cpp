@@ -128,3 +128,26 @@ void screenshot(SDL_Renderer *renderer)
 
   log(log_level::Info, "Took screenshot");
 }
+
+void render_profiler(SDL_Surface* surface, double background, double walls, double ui) {
+  double total = background + walls + ui;
+
+  float prop_background = background / total;
+  float prop_walls = walls / total;
+  float prop_ui = ui / total;
+
+  for(int i = 0; i < prop_background * surface->h; i++)
+  {
+    set_pixel(surface, 0, i, {255, 0, 0, 255});
+  }
+
+  for(int i = prop_background * surface->h; i < (prop_background + prop_walls) * surface->h; i++)
+  {
+    set_pixel(surface, 0, i, {0, 255, 0, 255});
+  }
+
+  for(int i = (prop_background + prop_walls) * surface->h; i < surface->h; i++)
+  {
+    set_pixel(surface, 0, i, {0, 0, 255, 255});
+  }
+}
