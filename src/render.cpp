@@ -4,6 +4,8 @@ extern std::map<std::string, SDL_Surface*> textures;
 
 void set_pixel(SDL_Surface* surface, int x, int y, SDL_Color color)
 {
+  if(x < 0 || x >= surface->w || y < 0 || y >= surface->h) return;
+
   Uint32 * pixel = (Uint32 *) ((Uint8 *) surface->pixels
 		  + y * surface->pitch
 		  + x * surface->format->BytesPerPixel);
