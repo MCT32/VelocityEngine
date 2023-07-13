@@ -207,7 +207,7 @@ int main(int argc, char* argv[])
 
     render_background(surface);
 
-    //render_walls(renderer);
+    render_walls(surface);
 
     //render_ui(renderer, fps, gamestate.paused, currentMenu);
 

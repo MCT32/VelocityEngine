@@ -16,6 +16,6 @@ void set_pixel(SDL_Surface* surface, int x, int y, SDL_Color color);
 
 void render_background(SDL_Surface *surface);
 
-void render_walls(SDL_Renderer *renderer);
+void render_walls(SDL_Surface *surface);
 
 void screenshot(SDL_Renderer *renderer);
