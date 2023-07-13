@@ -2,20 +2,25 @@
 
 extern std::map<std::string, SDL_Surface*> textures;
 
+void set_pixel(SDL_Surface* surface, int x, int y, SDL_Color color)
+{
+  Uint32 * pixel = (Uint32 *) ((Uint8 *) surface->pixels
+		  + y * surface->pitch
+		  + x * surface->format->BytesPerPixel);
+  *pixel = SDL_MapRGBA(surface->format, color.r, color.g, color.b, color.a);
+}
+
 // FIX: Make gradient proportional to width like render_walls.
 // background
 // Purpose: Draws the background gradient.
 // Parameters:
 //   renderer: The renderer to draw with.
 // Returns: void
-void render_background(SDL_Renderer *renderer)
+void render_background(SDL_Surface *surface)
 {
-  int w, h;
-  SDL_RenderGetLogicalSize(renderer, &w, &h);
-
-  for(int y = 0; y < h; y++)
+  for(int y = 0; y < surface->h; y++)
   {
-    float v = float(y) / h;
+    float v = float(y) / surface->h;
 
     SDL_Color col;
     if(v < 0.5)
@@ -25,8 +30,10 @@ void render_background(SDL_Renderer *renderer)
       col = lerp_color(background_colors[2], background_colors[1], v * 2 - 1);
     }
 
-    SDL_SetRenderDrawColor(renderer, col.r, col.g, col.b, col.a);
-    SDL_RenderDrawLine(renderer, 0, y, w, y);
+    for(int x = 0; x < surface->w; x++)
+    {
+      set_pixel(surface, x, y, col);
+    }
   }
 }
 
@@ -35,16 +42,13 @@ void render_background(SDL_Renderer *renderer)
 // Parameters:
 //   renderer: The renderer to draw the walls with.
 // Returns: void
-void render_walls(SDL_Renderer *renderer)
+void render_walls(SDL_Surface *surface)
 {
-  int w, h;
-  SDL_RenderGetLogicalSize(renderer, &w, &h);
-
   vec2 dir = vec2(0, 1).rotate(Player.getRotation());
 
-  for(int i = 0; i < w; i++)
+  for(int i = 0; i < surface->w; i++)
   {
-    float u = float(i) / w * 2 - 1;
+    float u = float(i) / surface->w * 2 - 1;
 
     vec2 plane = vec2(u * FOV, 0).rotate(Player.getRotation());
 
@@ -58,8 +62,8 @@ void render_walls(SDL_Renderer *renderer)
     {
       float camdist = end.sub(Player.getPosition()).rotate(-Player.getRotation()).y;
 
-      int height = w / 2 / camdist;
-      int gap = (h - height) / 2;
+      int height = surface->w / 2 / camdist;
+      int gap = (surface->h - height) / 2;
 
       SDL_Surface* texture = textures[wall_textures[wall-1]];
 
@@ -82,7 +86,7 @@ void render_walls(SDL_Renderer *renderer)
 
       for(int j = 0; j < height; j++)
       {
-	if(gap + j < 0 || gap + j > h) continue;
+	if(gap + j < 0 || gap + j > surface->h) continue;
 
 	uint texY = floor(float(j) / height * texture->h);
 	uint texX = int(floor(norm ? end.x * texture->w : end.y * texture->w)) % texture->w;
@@ -96,8 +100,7 @@ void render_walls(SDL_Renderer *renderer)
 
 	SDL_GetRGB(*reinterpret_cast<Uint32 *>(pixels), texture->format, &red, &green, &blue);
 
-        SDL_SetRenderDrawColor(renderer, red, green, blue, 255);
-	SDL_RenderDrawPoint(renderer, i, j + gap);
+	set_pixel(surface, i, j + gap, {red, green, blue, 255});
       }
     }
   }

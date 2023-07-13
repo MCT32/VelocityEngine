@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
   log(log_level::Info, "Setting up SDL");
   
   SDL_Window* window = NULL;
-  SDL_Renderer* renderer = NULL;
+  SDL_Surface* surface = NULL;
 
   if (SDL_Init(SDL_INIT_VIDEO) < 0)
   {
@@ -89,10 +89,6 @@ int main(int argc, char* argv[])
     log(log_level::Error, "Could not create window: " + std::string(SDL_GetError()));
     return 1;
   }
-
-  renderer = SDL_CreateRenderer(window, -1, 0);
-
-  SDL_RenderSetLogicalSize(renderer, 640, 480);
 
   log(log_level::Info, "Finished setting up SDL");
   log(log_level::Info, "Loading map");
@@ -207,19 +203,17 @@ int main(int argc, char* argv[])
       Player.update(deltaTime);
     }
 
-    SDL_RenderClear(renderer);
+    surface = SDL_GetWindowSurface(window);
 
-    render_background(renderer);
+    render_background(surface);
 
-    render_walls(renderer);
+    render_walls(surface);
 
-    render_ui(renderer, fps, gamestate.paused, currentMenu);
+    render_ui(surface, fps, gamestate.paused, currentMenu);
 
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    //if(should_screenshot) screenshot(renderer);
 
-    if(should_screenshot) screenshot(renderer);
-
-    SDL_RenderPresent(renderer);
+    SDL_UpdateWindowSurface(window);
   }
 
   TTF_CloseFont(debug_font);
