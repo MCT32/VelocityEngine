@@ -238,7 +238,7 @@ int main(int argc, char* argv[])
 
     if(profile) render_profiler(surface, time_background.count(), time_walls.count(), time_ui.count());
     
-    //if(should_screenshot) screenshot(renderer);
+    if(should_screenshot) screenshot(surface);
 
     SDL_UpdateWindowSurface(window);
   }

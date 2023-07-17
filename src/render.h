@@ -18,6 +18,6 @@ void render_background(SDL_Surface *surface);
 
 void render_walls(SDL_Surface *surface);
 
-void screenshot(SDL_Renderer *renderer);
+void screenshot(SDL_Surface *surface);
 
 void render_profiler(SDL_Surface* surface, double background, double walls, double ui);
