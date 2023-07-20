@@ -30,6 +30,8 @@ SDL_Color background_colors[3];
 
 TTF_Font* debug_font;
 
+SDL_Surface* background_cache;
+
 // Layout of the map
 uint8_t *map;
 uint8_t mapWidth, mapHeight;
@@ -129,6 +131,8 @@ int main(int argc, char* argv[])
 
   menu* currentMenu = &pauseDef;
 
+  int old_res[2] = {0, 0};
+
   while (!gamestate.quit)
   {
     uint64_t LAST = NOW;
@@ -211,8 +215,17 @@ int main(int argc, char* argv[])
 
     surface = SDL_GetWindowSurface(window);
 
+    if(surface->w != old_res[0] || surface->h != old_res[1])
+    {
+      old_res[0] = surface->w;
+      old_res[1] = surface->h;
+
+      background_cache = SDL_CreateRGBSurface(0, surface->w, surface->h, 32, 0, 0, 0, 0);
+      render_background(background_cache);
+    }
+
     auto t1 = std::chrono::high_resolution_clock::now();
-    render_background(surface);
+    SDL_BlitSurface(background_cache, NULL, surface, NULL);
     auto t2 = std::chrono::high_resolution_clock::now();
     render_walls(surface);
     auto t3 = std::chrono::high_resolution_clock::now();
@@ -225,7 +238,7 @@ int main(int argc, char* argv[])
 
     if(profile) render_profiler(surface, time_background.count(), time_walls.count(), time_ui.count());
     
-    //if(should_screenshot) screenshot(renderer);
+    if(should_screenshot) screenshot(surface);
 
     SDL_UpdateWindowSurface(window);
   }

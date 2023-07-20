@@ -108,25 +108,9 @@ void render_walls(SDL_Surface *surface)
   }
 }
 
-void screenshot(SDL_Renderer *renderer)
+void screenshot(SDL_Surface *surface)
 {
-  const Uint32 format = SDL_PIXELFORMAT_ARGB8888;
-  int w, h;
-  SDL_GetRendererOutputSize(renderer, &w, &h);
-
-  SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormat(0, w, h, 32, format);
-  if(!surface)
-  {
-    log(log_level::Error, "Could not create surface for screenchot: " + std::string(SDL_GetError()));
-    return;
-  }
-  if(SDL_RenderReadPixels(renderer, NULL, format, surface->pixels, surface->pitch))
-  {
-    log(log_level::Error, "Could not read pixels from renderer: " + std::string(SDL_GetError()));
-    return;
-  }
   SDL_SaveBMP(surface, "screenshot.bmp");
-  SDL_FreeSurface(surface);
 
   log(log_level::Info, "Took screenshot");
 }
